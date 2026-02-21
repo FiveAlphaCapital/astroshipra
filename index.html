@@ -3,8 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Astro <br>
-    Shipra Mathur — Astrology Consultation</title>
+  <title>Astro <br> Shipra Mathur — Astrology Consultation</title>
 
   <style>
     :root{
@@ -49,7 +48,6 @@
       position:relative;
     }
 
-    /* HERO */
     .hero{
       display:grid;
       grid-template-columns: 1.12fr .88fr;
@@ -57,13 +55,12 @@
     }
 
     .left{
-      padding: 30px 26px 22px;
+      padding: 30px 26px 30px; /* Increased bottom padding slightly for balance */
       background: linear-gradient(180deg, rgba(15,22,56,.72), rgba(15,22,56,.52));
       -webkit-backdrop-filter: blur(10px);
       backdrop-filter: blur(10px);
     }
 
-    /* Branding */
     .brandRow{
       display:flex;
       align-items:center;
@@ -96,12 +93,12 @@
     }
 
     .brandName{
-  margin:0;
-  font-weight: 650;
-  letter-spacing: .3px;
-  font-size: clamp(24px, 3vw, 44px);
-  line-height: 1.0;
-}
+      margin:0;
+      font-weight: 650;
+      letter-spacing: .3px;
+      font-size: clamp(24px, 3vw, 44px);
+      line-height: 1.0;
+    }
 
     .brandTag{
       font-size:13px;
@@ -111,7 +108,6 @@
       margin-top:6px;
     }
 
-    /* Rotating punchline */
     .punchline{
       margin: 14px 0 10px;
       font-size: clamp(18px, 2.5vw, 28px);
@@ -136,7 +132,6 @@
       max-width: 70ch;
     }
 
-    /* Topic Buttons */
     .topicRow{
       display:flex;
       flex-wrap:wrap;
@@ -166,7 +161,6 @@
       color: #091025;
     }
 
-    /* Pain points panel */
     .panel{
       margin-top: 10px;
       border-radius: 16px;
@@ -187,42 +181,14 @@
       line-height: 1.45;
     }
 
-    /* What you get */
-    .whatYouGet{
-      margin-top: 12px;
-      display:grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 10px;
-    }
-    .getItem{
-      border-radius: 16px;
-      border: 1px solid rgba(255,255,255,.12);
-      background: rgba(255,255,255,.05);
-      padding: 12px 12px 10px;
-      min-width: 0;
-    }
-    .getItem strong{
-      display:block;
-      font-size: 12.8px;
-      letter-spacing:.2px;
-      margin-bottom: 4px;
-    }
-    .getItem span{
-      display:block;
-      font-size: 12.2px;
-      color: var(--muted);
-      line-height: 1.25;
-    }
-
-    /* RIGHT PANEL (Safari-friendly image sizing) */
     .right{
       padding: 18px;
       background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
-      min-height: 540px;
+      min-height: 480px; /* Reduced to bring pricing up */
     }
     .cover{
       width: 100%;
-      aspect-ratio: 4 / 5;            /* stable shape across Safari */
+      aspect-ratio: 4 / 5;
       border-radius: 16px;
       border: 1px solid rgba(255,255,255,.12);
       position:relative;
@@ -239,7 +205,6 @@
       display:block;
     }
 
-    /* Pricing section */
     .pricing{
       padding: 24px 18px 16px;
       border-top: 1px solid rgba(255,255,255,.10);
@@ -340,7 +305,6 @@
       border: 1px solid rgba(255,255,255,.14);
     }
 
-    /* Disclaimer */
     .disclaimer{
       padding: 12px 18px 16px;
       border-top: 1px solid rgba(255,255,255,.10);
@@ -350,18 +314,15 @@
       background: rgba(10,14,36,.35);
     }
 
-    /* Responsive */
     @media (max-width: 980px){
       .hero{ grid-template-columns: 1fr; }
       .right{ min-height: 340px; }
       .tiers{ grid-template-columns: 1fr; }
-      .whatYouGet{ grid-template-columns: 1fr 1fr; }
-      .cover{ aspect-ratio: 16 / 9; }  /* nicer on mobile */
+      .cover{ aspect-ratio: 16 / 9; }
     }
     @media (max-width: 520px){
       .left{ padding: 22px 16px 18px; }
       .right{ padding: 14px; }
-      .whatYouGet{ grid-template-columns: 1fr; }
     }
 
     @media (prefers-reduced-motion: reduce){
@@ -409,30 +370,10 @@
             <h3 id="topicTitle">Life Predictions — What People Usually Want Answers For</h3>
             <ul class="points" id="topicPoints"></ul>
           </div>
-
-          <div class="whatYouGet" aria-label="What you get">
-            <div class="getItem">
-              <strong>Timing Guidance</strong>
-              <span>When to act, pause, or change direction</span>
-            </div>
-            <div class="getItem">
-              <strong>Root-Cause Explanation</strong>
-              <span>Why it is happening in this phase</span>
-            </div>
-            <div class="getItem">
-              <strong>Simple Actionable Remedies</strong>
-              <span>Practical steps you can actually follow</span>
-            </div>
-            <div class="getItem">
-              <strong>Clear Next Steps</strong>
-              <span>3–4 priority actions to move forward</span>
-            </div>
-          </div>
         </div>
 
         <div class="right">
           <div class="cover" aria-label="Topic image">
-            <!-- Image only -->
             <img id="topicImage" src="assets/life-predictions.png" alt="Life Predictions" />
           </div>
         </div>
@@ -505,31 +446,15 @@
   </div>
 
   <script>
-    // --- Make sure DOM is ready before binding events (fixes Safari + pages caching edge cases) ---
     window.addEventListener("DOMContentLoaded", () => {
-
-      // ========= Rotating punchlines =========
       const punchlines = [
-        "Strategic Clarity For Life’s Important Moves",
-        "Insight That Moves You Forward",
-        "A Clear Path Ahead",
-        "Align With Your Best Timing",
-        "Precision Guidance For Your Next Chapter",
-        "Move Forward With Confidence",
-        "Clarity That Brings Peace Of Mind",
-        "Designed For Better Decisions",
-        "Make Confident Choices With Better Timing",
-        "Turn Uncertainty Into A Clear Plan",
-        "Support For The Decisions That Matter",
-        "Guidance That Feels Calm And Practical",
-        "Your Chart, Your Timing, Your Advantage",
-        "Find Direction Without Overthinking",
-        "Progress Starts With The Right Timing",
-        "Practical Remedies, Real Next Steps",
-        "Clarity For Money, Health, And Relationships",
-        "Plan Your Next Move With Confidence",
-        "When Timing Aligns, Life Gets Easier",
-        "Steady Guidance For Life’s Big Questions"
+        "Strategic Clarity For Life’s Important Moves", "Insight That Moves You Forward", "A Clear Path Ahead",
+        "Align With Your Best Timing", "Precision Guidance For Your Next Chapter", "Move Forward With Confidence",
+        "Clarity That Brings Peace Of Mind", "Designed For Better Decisions", "Make Confident Choices With Better Timing",
+        "Turn Uncertainty Into A Clear Plan", "Support For The Decisions That Matter", "Guidance That Feels Calm And Practical",
+        "Your Chart, Your Timing, Your Advantage", "Find Direction Without Overthinking", "Progress Starts With The Right Timing",
+        "Practical Remedies, Real Next Steps", "Clarity For Money, Health, And Relationships", "Plan Your Next Move With Confidence",
+        "When Timing Aligns, Life Gets Easier", "Steady Guidance For Life’s Big Questions"
       ];
 
       const rotatingEl = document.getElementById("rotatingLine");
@@ -538,108 +463,33 @@
       function rotatePunchline(){
         rotatingEl.classList.remove("rt-in");
         rotatingEl.classList.add("rt-out");
-
         setTimeout(() => {
           let idx = Math.floor(Math.random() * punchlines.length);
           if (punchlines.length > 1 && idx === lastIndex) idx = (idx + 1) % punchlines.length;
           lastIndex = idx;
           rotatingEl.textContent = punchlines[idx];
-
           rotatingEl.classList.remove("rt-out");
           rotatingEl.classList.add("rt-in");
         }, 160);
       }
-
       rotatingEl.classList.add("rt-in");
       setInterval(rotatePunchline, 4000);
 
-      // ========= Topics (4 points max) =========
       const TOPICS = {
-        predictions: {
-          label: "Life Predictions",
-          points: [
-            "Main theme of the next 6–12 months",
-            "Good windows vs caution windows",
-            "Where to focus: money, health, relationships, career",
-            "What to do now to improve later outcomes"
-          ]
-        },
-        
-        money: {
-          label: "Money",
-          points: [
-            "Why money feels stuck despite effort",
-            "Best time to switch jobs, negotiate, or ask for a raise",
-            "Investment timing: when to be cautious vs aggressive",
-            "How to reduce financial stress in this phase"
-          ]
-        },
-        health: {
-          label: "Health",
-          points: [
-            "Why recovery feels slow and when it improves",
-            "Best time to start a health routine or treatment plan",
-            "Stress, sleep, and digestion: what to stabilize first",
-            "Remedies that support calm and consistency"
-          ]
-        },
-        relationships: {
-          label: "Relationships",
-          points: [
-            "Why misunderstandings repeat with the same person",
-            "Should you repair, pause, or move on",
-            "How to communicate without conflict escalation",
-            "Timing for new relationships vs focusing on self"
-          ]
-        },
-        marriage: {
-          label: "Marriage",
-          points: [
-            "Marriage timing: why delays happen and when it improves",
-            "Compatibility clarity and stability markers",
-            "Family pressure: what to do next",
-            "Remedies for harmony and reduced friction"
-          ]
-        },
-        career: {
-          label: "Career And Job",
-          points: [
-            "When to switch jobs vs when to wait",
-            "Promotion timing and how to position yourself",
-            "Workplace politics: how to protect your reputation",
-            "What to learn next for maximum payoff"
-          ]
-        },
-        business: {
-          label: "Business",
-          points: [
-            "Best time to launch, expand, or rebrand",
-            "Cashflow volatility: when it stabilizes",
-            "Partnership decisions: what to avoid",
-            "Hiring / scaling timing that supports growth"
-          ]
-        },
-        children: {
-          label: "Children",
-          points: [
-            "Education direction: what suits the child best",
-            "Focus and discipline: how to improve consistency",
-            "Exam/competition timing support",
-            "Remedies for calm and learning"
-          ]
-        }
+        predictions: { label: "Life Predictions", points: ["Main theme of the next 6–12 months", "Good windows vs caution windows", "Where to focus: money, health, relationships, career", "What to do now to improve later outcomes"] },
+        money: { label: "Money", points: ["Why money feels stuck despite effort", "Best time to switch jobs, negotiate, or ask for a raise", "Investment timing: when to be cautious vs aggressive", "How to reduce financial stress in this phase"] },
+        health: { label: "Health", points: ["Why recovery feels slow and when it improves", "Best time to start a health routine or treatment plan", "Stress, sleep, and digestion: what to stabilize first", "Remedies that support calm and consistency"] },
+        relationships: { label: "Relationships", points: ["Why misunderstandings repeat with the same person", "Should you repair, pause, or move on", "How to communicate without conflict escalation", "Timing for new relationships vs focusing on self"] },
+        marriage: { label: "Marriage", points: ["Marriage timing: why delays happen and when it improves", "Compatibility clarity and stability markers", "Family pressure: what to do next", "Remedies for harmony and reduced friction"] },
+        career: { label: "Career And Job", points: ["When to switch jobs vs when to wait", "Promotion timing and how to position yourself", "Workplace politics: how to protect your reputation", "What to learn next for maximum payoff"] },
+        business: { label: "Business", points: ["Best time to launch, expand, or rebrand", "Cashflow volatility: when it stabilizes", "Partnership decisions: what to avoid", "Hiring / scaling timing that supports growth"] },
+        children: { label: "Children", points: ["Education direction: what suits the child best", "Focus and discipline: how to improve consistency", "Exam/competition timing support", "Remedies for calm and learning"] }
       };
 
-      // ========= Local image files (YOUR exact filenames) =========
       const TOPIC_IMAGES = {
-        predictions: "assets/life-predictions.png",
-        money: "assets/money.png",
-        health: "assets/health.png",
-        relationships: "assets/relationships.png",
-        marriage: "assets/marriage.png",
-        career: "assets/career.png",
-        business: "assets/business.png",
-        children: "assets/children.png"
+        predictions: "assets/life-predictions.png", money: "assets/money.png", health: "assets/health.png",
+        relationships: "assets/relationships.png", marriage: "assets/marriage.png", career: "assets/career.png",
+        business: "assets/business.png", children: "assets/children.png"
       };
 
       const topicTitleEl = document.getElementById("topicTitle");
@@ -649,30 +499,19 @@
       function renderTopic(key){
         const t = TOPICS[key];
         if(!t) return;
-
         topicTitleEl.textContent = `${t.label} — What People Usually Want Answers For`;
-
         topicPointsEl.innerHTML = "";
         t.points.forEach(p => {
           const li = document.createElement("li");
           li.textContent = p;
           topicPointsEl.appendChild(li);
         });
-
         const imgSrc = TOPIC_IMAGES[key] || TOPIC_IMAGES.predictions;
-
-        // Force a fresh load (fixes Safari caching a previous src sometimes)
         topicImageEl.src = "";
         topicImageEl.src = imgSrc;
         topicImageEl.alt = t.label;
-
-        topicImageEl.onerror = () => {
-          console.warn("Image not found:", imgSrc);
-          topicImageEl.src = TOPIC_IMAGES.predictions;
-        };
       }
 
-      // Bind clicks (this fixes "images not changing" if script executed before DOM)
       document.querySelectorAll(".topicBtn").forEach(btn => {
         btn.addEventListener("click", () => {
           document.querySelectorAll(".topicBtn").forEach(b => b.classList.remove("active"));
@@ -680,47 +519,20 @@
           renderTopic(btn.dataset.topic);
         });
       });
-
-      // init: Life Predictions
       renderTopic("predictions");
     });
 
-    // ========= WhatsApp Booking =========
-    const WHATSAPP_NUMBER = "917760997809"; // no "+"
-
-    function getActiveTopicLabel(){
-      const active = document.querySelector(".topicBtn.active");
-      return active ? active.textContent.trim() : "Not Selected";
-    }
-
+    const WHATSAPP_NUMBER = "917760997809";
     function bookTier(planName){
-      const topic = getActiveTopicLabel();
-
-      const message =
-        "Hi AstroShipra,\n\n" +
-        "I would like to book a consultation.\n\n" +
-        "Selected Plan: " + planName + "\n" +
-        "Selected Topic: " + topic + "\n\n" +
-        "Please find my details below:\n" +
-        "Name:\n" +
-        "Date of Birth (DD/MM/YYYY):\n" +
-        "Birth Time:\n" +
-        "Birth Place:\n\n" +
-        "Preferred Consultation Date/Time:\n\n" +
-        "Additional Notes (Optional):\n";
-
-      const url = "https://wa.me/" + WHATSAPP_NUMBER + "?text=" + encodeURIComponent(message);
-      window.open(url, "_blank", "noopener");
+      const active = document.querySelector(".topicBtn.active");
+      const topic = active ? active.textContent.trim() : "Not Selected";
+      const message = "Hi AstroShipra,\n\nI would like to book a consultation.\n\nSelected Plan: " + planName + "\nSelected Topic: " + topic + "\n\nPlease find my details below:\nName:\nDate of Birth (DD/MM/YYYY):\nBirth Time:\nBirth Place:\n\nPreferred Consultation Date/Time:\n\nAdditional Notes (Optional):\n";
+      window.open("https://wa.me/" + WHATSAPP_NUMBER + "?text=" + encodeURIComponent(message), "_blank", "noopener");
     }
 
-    // ========= Payment Link =========
-    const PAYMENT_LINK_URL = "PAYMENT_LINK_URL_HERE"; // replace with your real URL
-
+    const PAYMENT_LINK_URL = "PAYMENT_LINK_URL_HERE";
     function openPayment(planName){
-      if (PAYMENT_LINK_URL === "PAYMENT_LINK_URL_HERE") {
-        alert("Replace PAYMENT_LINK_URL_HERE with your real payment page URL.");
-        return;
-      }
+      if (PAYMENT_LINK_URL === "PAYMENT_LINK_URL_HERE") { alert("Replace PAYMENT_LINK_URL_HERE with your real payment page URL."); return; }
       const url = PAYMENT_LINK_URL + (PAYMENT_LINK_URL.includes("?") ? "&" : "?") + "plan=" + encodeURIComponent(planName);
       window.open(url, "_blank", "noopener");
     }
