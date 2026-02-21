@@ -1,0 +1,735 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>AstroShipra — Astrology Consultation</title>
+
+  <style>
+    :root{
+      --bg1:#0b0f2a;
+      --bg2:#2b0b3a;
+      --panel: rgba(15,22,56,.68);
+      --text:#f4f6ff;
+      --muted:#c7cbe6;
+      --gold:#f5c86a;
+      --gold2:#ffdca0;
+      --accent:#8be9ff;
+      --shadow: 0 18px 60px rgba(0,0,0,.45);
+      --radius: 18px;
+      --maxw: 1100px;
+      --font: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Noto Sans", "Helvetica Neue", sans-serif;
+    }
+
+    *{ box-sizing:border-box; }
+    html, body{ height:100%; }
+    body{
+      margin:0;
+      font-family: var(--font);
+      color: var(--text);
+      background:
+        radial-gradient(900px 500px at 20% 10%, rgba(139,233,255,.18), transparent 60%),
+        radial-gradient(900px 500px at 80% 0%, rgba(245,200,106,.20), transparent 55%),
+        radial-gradient(1200px 700px at 50% 120%, rgba(255,107,107,.12), transparent 55%),
+        linear-gradient(135deg, var(--bg1), var(--bg2));
+      display:flex;
+      justify-content:center;
+      padding: 18px 12px 28px;
+    }
+
+    .wrap{ width:min(var(--maxw), 100%); }
+
+    .card{
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      border: 1px solid rgba(255,255,255,.12);
+      background: linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.04));
+      overflow:hidden;
+      position:relative;
+    }
+
+    /* HERO */
+    .hero{
+      display:grid;
+      grid-template-columns: 1.12fr .88fr;
+      gap:0;
+    }
+
+    .left{
+      padding: 30px 26px 22px;
+      background: linear-gradient(180deg, rgba(15,22,56,.72), rgba(15,22,56,.52));
+      backdrop-filter: blur(10px);
+    }
+
+    /* Branding */
+    .brandRow{
+      display:flex;
+      align-items:center;
+      gap:16px;
+      flex-wrap:wrap;
+      margin-bottom: 10px;
+    }
+
+    .brandStar{
+      width:52px;
+      height:52px;
+      border-radius:16px;
+      position:relative;
+      background:
+        radial-gradient(circle at 30% 30%, rgba(245,200,106,.95), rgba(245,200,106,.35) 60%, transparent 70%),
+        radial-gradient(circle at 70% 70%, rgba(139,233,255,.55), transparent 60%),
+        linear-gradient(135deg, rgba(255,255,255,.12), rgba(255,255,255,.03));
+      border: 1px solid rgba(255,255,255,.18);
+      box-shadow: 0 12px 40px rgba(0,0,0,.35);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      flex: 0 0 auto;
+    }
+    .brandStar::after{
+      content:"✦";
+      font-size:24px;
+      color:white;
+      text-shadow: 0 8px 18px rgba(0,0,0,.45);
+    }
+
+    .brandName{
+      margin:0;
+      font-weight: 950;
+      letter-spacing: .4px;
+      font-size: clamp(34px, 6vw, 64px);
+      line-height: 1.0;
+    }
+
+    .brandTag{
+      font-size:13px;
+      letter-spacing:.3px;
+      font-weight:700;
+      color:var(--muted);
+      margin-top:6px;
+    }
+
+    /* Rotating punchline */
+    .punchline{
+      margin: 14px 0 10px;
+      font-size: clamp(18px, 2.5vw, 28px);
+      font-weight: 900;
+      letter-spacing: .15px;
+      line-height: 1.1;
+    }
+    .gold{ color: var(--gold); }
+    #rotatingLine{
+      display:inline-block;
+      transition: opacity 180ms ease, transform 180ms ease, filter 180ms ease;
+      will-change: opacity, transform, filter;
+    }
+    .rt-out{ opacity:0; transform: translateY(6px); filter: blur(1px); }
+    .rt-in{ opacity:1; transform: translateY(0); filter: blur(0); }
+
+    .sub{
+      margin: 6px 0 14px;
+      color: var(--muted);
+      font-size: 15.5px;
+      line-height: 1.45;
+      max-width: 70ch;
+    }
+
+    /* Topic Buttons */
+    .topicRow{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      margin: 10px 0 12px;
+      padding:0;
+      list-style:none;
+    }
+    .topicBtn{
+      border-radius: 999px;
+      padding: 10px 12px;
+      font-weight: 900;
+      letter-spacing: .15px;
+      font-size: 12.5px;
+      background: rgba(255,255,255,.08);
+      border: 1px solid rgba(255,255,255,.14);
+      color: var(--text);
+      cursor:pointer;
+      user-select:none;
+    }
+    .topicBtn:hover{ filter: brightness(1.05); }
+    .topicBtn.active{
+      background: linear-gradient(135deg, rgba(245,200,106,.95), rgba(255,220,160,.85));
+      border: 0;
+      color: #091025;
+    }
+
+    /* Pain points panel */
+    .panel{
+      margin-top: 10px;
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.06);
+      padding: 14px 14px 12px;
+    }
+    .panel h3{
+      margin:0;
+      font-size: 14px;
+      letter-spacing:.2px;
+    }
+    .points{
+      margin: 10px 0 0;
+      padding-left: 18px;
+      color: rgba(255,255,255,.88);
+      font-size: 14.5px;
+      line-height: 1.45;
+    }
+
+    /* What you get */
+    .whatYouGet{
+      margin-top: 12px;
+      display:grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+    }
+    .getItem{
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.05);
+      padding: 12px 12px 10px;
+    }
+    .getItem strong{
+      display:block;
+      font-size: 12.8px;
+      letter-spacing:.2px;
+      margin-bottom: 4px;
+    }
+    .getItem span{
+      display:block;
+      font-size: 12.2px;
+      color: var(--muted);
+      line-height: 1.25;
+    }
+
+    /* RIGHT PANEL */
+    .right{
+      padding: 18px;
+      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
+      min-height: 540px;
+    }
+    .cover{
+      height: 100%;
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,.12);
+      position:relative;
+      overflow:hidden;
+      background:
+        radial-gradient(circle at 25% 20%, rgba(245,200,106,.25), transparent 55%),
+        radial-gradient(circle at 80% 20%, rgba(139,233,255,.18), transparent 55%),
+        linear-gradient(135deg, rgba(255,255,255,.08), rgba(255,255,255,.03));
+    }
+    .cover img{
+      position:absolute;
+      inset:0;
+      width:100%;
+      height:100%;
+      object-fit: cover;
+      display:block;
+    }
+    .coverOverlay{
+      position:absolute;
+      inset:auto 14px 14px 14px;
+      padding: 12px 12px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,.14);
+      background: rgba(0,0,0,.28);
+      backdrop-filter: blur(10px);
+    }
+    .coverOverlay .label{
+      font-weight: 900;
+      letter-spacing:.2px;
+      font-size: 12.5px;
+    }
+    .coverOverlay .hint{
+      color: rgba(255,255,255,.78);
+      font-size: 12px;
+      line-height: 1.25;
+      margin-top: 4px;
+    }
+
+    /* Pricing section */
+    .pricing{
+      padding: 24px 18px 16px;
+      border-top: 1px solid rgba(255,255,255,.10);
+      background: rgba(10,14,36,.22);
+    }
+    .pricingHead{
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-bottom: 10px;
+    }
+    .pricingHead h2{
+      margin:0;
+      font-size: 18px;
+      letter-spacing:.2px;
+      background: linear-gradient(135deg, var(--gold), var(--gold2));
+      color:#091025;
+      padding:10px 14px;
+      border-radius:12px;
+      display:inline-block;
+      font-weight: 950;
+    }
+    .pricingHead p{
+      margin: 10px 0 0;
+      color: var(--muted);
+      font-size: 12.8px;
+      line-height: 1.35;
+      max-width: 90ch;
+    }
+
+    .tiers{
+      display:grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-top: 12px;
+    }
+    .tier{
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.06);
+      padding: 14px 14px 12px;
+    }
+    .tier h3{
+      margin:0 0 6px;
+      font-size: 14px;
+      letter-spacing:.2px;
+    }
+    .price{
+      margin: 2px 0 6px;
+      font-size: 24px;
+      font-weight: 950;
+      color: var(--gold);
+    }
+    .meta{
+      margin:0 0 10px;
+      font-size: 12.5px;
+      color: var(--muted);
+    }
+    .tier ul{
+      margin:0;
+      padding-left: 18px;
+      color: rgba(255,255,255,.88);
+      font-size: 12.8px;
+      line-height: 1.35;
+    }
+    .tierCtas{
+      margin-top: 12px;
+      display:flex;
+      gap: 10px;
+      flex-wrap:wrap;
+    }
+
+    .btn{
+      border:0;
+      cursor:pointer;
+      text-decoration:none;
+      border-radius: 12px;
+      padding: 10px 12px;
+      font-weight: 950;
+      letter-spacing:.15px;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:10px;
+      white-space:nowrap;
+    }
+    .btn.primary{
+      color:#091025;
+      background: linear-gradient(135deg, var(--gold), var(--gold2));
+      box-shadow: 0 14px 40px rgba(245,200,106,.18);
+    }
+    .btn.secondary{
+      color: var(--text);
+      background: rgba(255,255,255,.08);
+      border: 1px solid rgba(255,255,255,.14);
+    }
+
+    /* Disclaimer */
+    .disclaimer{
+      padding: 12px 18px 16px;
+      border-top: 1px solid rgba(255,255,255,.10);
+      color: rgba(255,255,255,.70);
+      font-size: 12px;
+      line-height: 1.35;
+      background: rgba(10,14,36,.35);
+    }
+
+    /* Responsive */
+    @media (max-width: 980px){
+      .hero{ grid-template-columns: 1fr; }
+      .right{ min-height: 340px; }
+      .tiers{ grid-template-columns: 1fr; }
+      .whatYouGet{ grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 520px){
+      .left{ padding: 22px 16px 18px; }
+      .right{ padding: 14px; }
+      .whatYouGet{ grid-template-columns: 1fr; }
+    }
+
+    @media (prefers-reduced-motion: reduce){
+      #rotatingLine{ transition:none; }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <section class="card" aria-label="AstroShipra Advertisement">
+      <div class="hero">
+        <div class="left">
+          <div class="brandRow">
+            <div class="brandStar" aria-hidden="true"></div>
+            <div>
+              <h1 class="brandName">AstroShipra</h1>
+              <div class="brandTag">Strategic Astrology • Timing • Remedies</div>
+            </div>
+          </div>
+
+          <div class="punchline">
+            <span class="gold" id="rotatingLine">Strategic Clarity For Life’s Important Moves</span>
+          </div>
+
+          <p class="sub">
+            Focused readings based on your birth details and current planetary periods. Straight answers, practical steps, and timing guidance.
+          </p>
+
+          <!-- Life Predictions first -->
+          <ul class="topicRow" aria-label="Topics">
+            <li><button class="topicBtn active" type="button" data-topic="predictions">Life Predictions</button></li>
+            <li><button class="topicBtn" type="button" data-topic="money">Money</button></li>
+            <li><button class="topicBtn" type="button" data-topic="health">Health</button></li>
+            <li><button class="topicBtn" type="button" data-topic="relationships">Relationships</button></li>
+            <li><button class="topicBtn" type="button" data-topic="marriage">Marriage</button></li>
+            <li><button class="topicBtn" type="button" data-topic="career">Career And Job</button></li>
+            <li><button class="topicBtn" type="button" data-topic="business">Business</button></li>
+            <li><button class="topicBtn" type="button" data-topic="children">Children</button></li>
+          </ul>
+
+          <div class="panel" aria-live="polite">
+            <h3 id="topicTitle">Life Predictions — What People Usually Want Answers For</h3>
+            <ul class="points" id="topicPoints"></ul>
+          </div>
+
+          <div class="whatYouGet" aria-label="What you get">
+            <div class="getItem">
+              <strong>Timing Guidance</strong>
+              <span>When to act, pause, or change direction</span>
+            </div>
+            <div class="getItem">
+              <strong>Root-Cause Explanation</strong>
+              <span>Why it is happening in this phase</span>
+            </div>
+            <div class="getItem">
+              <strong>Simple Actionable Remedies</strong>
+              <span>Practical steps you can actually follow</span>
+            </div>
+            <div class="getItem">
+              <strong>Clear Next Steps</strong>
+              <span>3–4 priority actions to move forward</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="right">
+          <div class="cover" aria-label="Topic image">
+            <!-- This will update when topic changes -->
+            <img id="topicImage" src="assets/life-predictions.jpg" alt="Life Predictions" />
+            <div class="coverOverlay">
+              <div class="label" id="topicImageLabel">Life Predictions</div>
+              <div class="hint">Place images in your repo at <b>assets/</b> and keep these filenames.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PRICING -->
+      <div class="pricing" id="pricing">
+        <div class="pricingHead">
+          <div>
+            <h2>Pricing</h2>
+            <p>
+              Your topic buttons map directly to the 1-topic and 2-topic consultations. Full Kundali is for broader life planning.
+              Remedies will be tailored to the specific topic or problem areas identified during the interaction between AstroShipra and the individual.
+            </p>
+          </div>
+        </div>
+
+        <div class="tiers" aria-label="Pricing tiers">
+          <div class="tier">
+            <h3>Full Kundali Analysis And Remedies</h3>
+            <div class="price">₹25,000 / USD 300</div>
+            <div class="meta">60 Minutes Consultation</div>
+            <ul>
+              <li>Birth chart review + current dasha/transit timing</li>
+              <li>3–4 priority decisions</li>
+              <li>Simple actionable remedies</li>
+              <li>Follow-up notes summary (optional)</li>
+            </ul>
+            <div class="tierCtas">
+              <button class="btn primary" type="button" onclick="bookTier('Full Kundali Analysis — ₹25,000 / USD 300')">Book Option A</button>
+              <button class="btn secondary" type="button" onclick="openPayment('Full Kundali Analysis')">Payment Link</button>
+            </div>
+          </div>
+
+          <div class="tier">
+            <h3>1 Topic Consultation</h3>
+            <div class="price">₹10,000 / USD 100</div>
+            <div class="meta">15 Minute Consultation</div>
+            <ul>
+              <li>Explaining the problem area with the topic</li>
+              <li>Remedies for that specific issue</li>
+              <li>Clear next steps</li>
+            </ul>
+            <div class="tierCtas">
+              <button class="btn primary" type="button" onclick="bookTier('1 Topic Consultation — ₹10,000 / USD 100')">Book Option B</button>
+              <button class="btn secondary" type="button" onclick="openPayment('1 Topic Consultation')">Payment Link</button>
+            </div>
+          </div>
+
+          <div class="tier">
+            <h3>2 Topic Consultation</h3>
+            <div class="price">₹15,000 / USD 150</div>
+            <div class="meta">30 Minute Consultation</div>
+            <ul>
+              <li>Explaining the problem areas with the topics</li>
+              <li>Remedies for those specific issues</li>
+              <li>Sequenced plan + timing</li>
+            </ul>
+            <div class="tierCtas">
+              <button class="btn primary" type="button" onclick="bookTier('2 Topic Consultation — ₹15,000 / USD 150')">Book Option C</button>
+              <button class="btn secondary" type="button" onclick="openPayment('2 Topic Consultation')">Payment Link</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="disclaimer">
+        Disclaimer: Astrology is a guidance tool. Outcomes vary by individual effort and circumstances. No guarantees are implied.
+      </div>
+    </section>
+  </div>
+
+  <script>
+    // ========= Rotating punchlines =========
+    const punchlines = [
+      "Strategic Clarity For Life’s Important Moves",
+      "Insight That Moves You Forward",
+      "A Clear Path Ahead",
+      "Align With Your Best Timing",
+      "Precision Guidance For Your Next Chapter",
+      "Move Forward With Confidence",
+      "Clarity That Brings Peace Of Mind",
+      "Designed For Better Decisions",
+      "Make Confident Choices With Better Timing",
+      "Turn Uncertainty Into A Clear Plan",
+      "Support For The Decisions That Matter",
+      "Guidance That Feels Calm And Practical",
+      "Your Chart, Your Timing, Your Advantage",
+      "Find Direction Without Overthinking",
+      "Progress Starts With The Right Timing",
+      "Practical Remedies, Real Next Steps",
+      "Clarity For Money, Health, And Relationships",
+      "Plan Your Next Move With Confidence",
+      "When Timing Aligns, Life Gets Easier",
+      "Steady Guidance For Life’s Big Questions"
+    ];
+
+    const rotatingEl = document.getElementById("rotatingLine");
+    let lastIndex = 0;
+
+    function rotatePunchline(){
+      rotatingEl.classList.remove("rt-in");
+      rotatingEl.classList.add("rt-out");
+
+      setTimeout(() => {
+        let idx = Math.floor(Math.random() * punchlines.length);
+        if (punchlines.length > 1 && idx === lastIndex) idx = (idx + 1) % punchlines.length;
+        lastIndex = idx;
+        rotatingEl.textContent = punchlines[idx];
+
+        rotatingEl.classList.remove("rt-out");
+        rotatingEl.classList.add("rt-in");
+      }, 160);
+    }
+
+    rotatingEl.classList.add("rt-in");
+    setInterval(rotatePunchline, 4000);
+
+    // ========= Topics (4 points max) =========
+    const TOPICS = {
+      predictions: {
+        label: "Life Predictions",
+        points: [
+          "Main theme of the next 6–12 months",
+          "Good windows vs caution windows",
+          "Where to focus: money, health, relationships, career",
+          "What to do now to improve later outcomes"
+        ]
+      },
+      money: {
+        label: "Money",
+        points: [
+          "Why money feels stuck despite effort",
+          "Best time to switch jobs, negotiate, or ask for a raise",
+          "Investment timing: when to be cautious vs aggressive",
+          "How to reduce financial stress in this phase"
+        ]
+      },
+      health: {
+        label: "Health",
+        points: [
+          "Why recovery feels slow and when it improves",
+          "Best time to start a health routine or treatment plan",
+          "Stress, sleep, and digestion: what to stabilize first",
+          "Remedies that support calm and consistency"
+        ]
+      },
+      relationships: {
+        label: "Relationships",
+        points: [
+          "Why misunderstandings repeat with the same person",
+          "Should you repair, pause, or move on",
+          "How to communicate without conflict escalation",
+          "Timing for new relationships vs focusing on self"
+        ]
+      },
+      marriage: {
+        label: "Marriage",
+        points: [
+          "Marriage timing: why delays happen and when it improves",
+          "Compatibility clarity and stability markers",
+          "Family pressure: what to do next",
+          "Remedies for harmony and reduced friction"
+        ]
+      },
+      career: {
+        label: "Career And Job",
+        points: [
+          "When to switch jobs vs when to wait",
+          "Promotion timing and how to position yourself",
+          "Workplace politics: how to protect your reputation",
+          "What to learn next for maximum payoff"
+        ]
+      },
+      business: {
+        label: "Business",
+        points: [
+          "Best time to launch, expand, or rebrand",
+          "Cashflow volatility: when it stabilizes",
+          "Partnership decisions: what to avoid",
+          "Hiring / scaling timing that supports growth"
+        ]
+      },
+      children: {
+        label: "Children",
+        points: [
+          "Education direction: what suits the child best",
+          "Focus and discipline: how to improve consistency",
+          "Exam/competition timing support",
+          "Remedies for calm and learning"
+        ]
+      }
+    };
+
+    // ========= Local image files (GitHub repo) =========
+    // Put these files in your repo at /assets/ with these exact names:
+    const TOPIC_IMAGES = {
+      predictions: "assets/life-predictions.jpg",
+      money: "assets/money.jpg",
+      health: "assets/health.jpg",
+      relationships: "assets/relationships.jpg",
+      marriage: "assets/marriage.jpg",
+      career: "assets/career.jpg",
+      business: "assets/business.jpg",
+      children: "assets/children.jpg"
+    };
+
+    const topicTitleEl = document.getElementById("topicTitle");
+    const topicPointsEl = document.getElementById("topicPoints");
+    const topicImageEl = document.getElementById("topicImage");
+    const topicImageLabelEl = document.getElementById("topicImageLabel");
+
+    function renderTopic(key){
+      const t = TOPICS[key];
+      if(!t) return;
+
+      topicTitleEl.textContent = `${t.label} — What People Usually Want Answers For`;
+
+      topicPointsEl.innerHTML = "";
+      t.points.forEach(p => {
+        const li = document.createElement("li");
+        li.textContent = p;
+        topicPointsEl.appendChild(li);
+      });
+
+      const imgSrc = TOPIC_IMAGES[key] || TOPIC_IMAGES.predictions;
+      topicImageEl.src = imgSrc;
+      topicImageEl.alt = t.label;
+      topicImageLabelEl.textContent = t.label;
+    }
+
+    document.querySelectorAll(".topicBtn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        document.querySelectorAll(".topicBtn").forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        renderTopic(btn.dataset.topic);
+      });
+    });
+
+    // ========= WhatsApp Booking =========
+    const WHATSAPP_NUMBER = "917760997809"; // no "+"
+
+    function getActiveTopicLabel(){
+      const active = document.querySelector(".topicBtn.active");
+      return active ? active.textContent.trim() : "Not Selected";
+    }
+
+    function bookTier(planName){
+      const topic = getActiveTopicLabel();
+
+      const message =
+        "Hi AstroShipra,\n\n" +
+        "I would like to book a consultation.\n\n" +
+        "Selected Plan: " + planName + "\n" +
+        "Selected Topic: " + topic + "\n\n" +
+        "Please find my details below:\n" +
+        "Name:\n" +
+        "Date of Birth (DD/MM/YYYY):\n" +
+        "Birth Time:\n" +
+        "Birth Place:\n\n" +
+        "Preferred Consultation Date/Time:\n\n" +
+        "Additional Notes (Optional):\n";
+
+      const url = "https://wa.me/" + WHATSAPP_NUMBER + "?text=" + encodeURIComponent(message);
+      window.open(url, "_blank", "noopener");
+    }
+
+    // ========= Payment Link =========
+    const PAYMENT_LINK_URL = "PAYMENT_LINK_URL_HERE"; // replace with your real URL
+
+    function openPayment(planName){
+      if (PAYMENT_LINK_URL === "PAYMENT_LINK_URL_HERE") {
+        alert("Replace PAYMENT_LINK_URL_HERE with your real payment page URL.");
+        return;
+      }
+      const url = PAYMENT_LINK_URL + (PAYMENT_LINK_URL.includes("?") ? "&" : "?") + "plan=" + encodeURIComponent(planName);
+      window.open(url, "_blank", "noopener");
+    }
+
+    // init: Life Predictions
+    renderTopic("predictions");
+  </script>
+</body>
+</html>
