@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>AstroShipra — Astrology Consultation</title>
+  <title>Astro Shipra Mathur — Astrology Consultation</title>
 
   <style>
     :root{
@@ -234,26 +234,6 @@
       object-fit: cover;
       display:block;
     }
-    .coverOverlay{
-      position:absolute;
-      inset:auto 14px 14px 14px;
-      padding: 12px 12px;
-      border-radius: 14px;
-      border: 1px solid rgba(255,255,255,.14);
-      background: rgba(0,0,0,.28);
-      backdrop-filter: blur(10px);
-    }
-    .coverOverlay .label{
-      font-weight: 900;
-      letter-spacing:.2px;
-      font-size: 12.5px;
-    }
-    .coverOverlay .hint{
-      color: rgba(255,255,255,.78);
-      font-size: 12px;
-      line-height: 1.25;
-      margin-top: 4px;
-    }
 
     /* Pricing section */
     .pricing{
@@ -386,13 +366,14 @@
 
 <body>
   <div class="wrap">
-    <section class="card" aria-label="AstroShipra Advertisement">
+    <section class="card" aria-label="Astro Shipra Mathur Advertisement">
       <div class="hero">
         <div class="left">
           <div class="brandRow">
             <div class="brandStar" aria-hidden="true"></div>
             <div>
-              <h1 class="brandName">AstroShipra</h1>
+              <!-- FIXED TITLE -->
+              <h1 class="brandName">Astro Shipra Mathur</h1>
               <div class="brandTag">Strategic Astrology • Timing • Remedies</div>
             </div>
           </div>
@@ -444,12 +425,8 @@
 
         <div class="right">
           <div class="cover" aria-label="Topic image">
-            <!-- This will update when topic changes -->
-            <img id="topicImage" src="assets/LifePredictions.png" alt="Life Predictions" />
-            <div class="coverOverlay">
-              <div class="label" id="topicImageLabel">Life Predictions</div>
-              <- div class="hint">  <b>assets/</b>  </div>
-            </div>
+            <!-- FIXED: only image in box (removed overlay text completely) -->
+            <img id="topicImage" src="assets/life-predictions.png" alt="Life Predictions" />
           </div>
         </div>
       </div>
@@ -643,23 +620,21 @@
       }
     };
 
-    // ========= Local image files (GitHub repo) =========
-    // Put these files in your repo at /assets/ with these exact names:
+    // ========= Local image files (YOUR exact filenames) =========
     const TOPIC_IMAGES = {
-        predictions: "assets/life-predictions.png",
-        money: "assets/money.png",
-        health: "assets/health.png",
-        relationships: "assets/relationships.png",
-        marriage: "assets/marriage.png",
-        career: "assets/career.png",
-        business: "assets/business.png",
-        children: "assets/children.png"
+      predictions: "assets/life-predictions.png",
+      money: "assets/money.png",
+      health: "assets/health.png",
+      relationships: "assets/relationships.png",
+      marriage: "assets/marriage.png",
+      career: "assets/career.png",
+      business: "assets/business.png",
+      children: "assets/children.png"
     };
 
     const topicTitleEl = document.getElementById("topicTitle");
     const topicPointsEl = document.getElementById("topicPoints");
     const topicImageEl = document.getElementById("topicImage");
-    const topicImageLabelEl = document.getElementById("topicImageLabel");
 
     function renderTopic(key){
       const t = TOPICS[key];
@@ -677,7 +652,12 @@
       const imgSrc = TOPIC_IMAGES[key] || TOPIC_IMAGES.predictions;
       topicImageEl.src = imgSrc;
       topicImageEl.alt = t.label;
-      topicImageLabelEl.textContent = t.label;
+
+      // Harden: fall back if any image is missing
+      topicImageEl.onerror = () => {
+        console.warn("Image not found:", imgSrc);
+        topicImageEl.src = TOPIC_IMAGES.predictions;
+      };
     }
 
     document.querySelectorAll(".topicBtn").forEach(btn => {
@@ -695,7 +675,6 @@
       const active = document.querySelector(".topicBtn.active");
       return active ? active.textContent.trim() : "Not Selected";
     }
-
 
     function bookTier(planName){
       const topic = getActiveTopicLabel();
