@@ -50,9 +50,11 @@
     }
 
     .hero{
-  display:grid;
-  grid-template-columns: 1fr 1fr;  /* left bigger, right smaller */
-}aa
+      display:grid;
+      grid-template-columns: 1fr .8fr;
+      gap:0;
+      align-items:stretch;
+    }
 
     /* IMPORTANT: prevents grid children from causing overflow on small screens */
     .hero > *{ min-width: 0; }
