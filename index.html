@@ -207,24 +207,31 @@
     }
 
     /* RIGHT IMAGE SETTINGS */
-    .right{
-  padding:22px 18px 16px; /* match .left spacing */
+   /* RIGHT IMAGE SETTINGS (DESKTOP: shrink, NO crop) */
+.right{
+  padding: 22px 18px 16px;          /* match .left padding */
+  background: linear-gradient(180deg, var(--glassA), var(--glassB));
   display:flex;
-  align-items:flex-start;  /* prevent full vertical stretch */
+  align-items:flex-start;
 }
 
 .cover{
   width:100%;
-  max-height:420px;       /* desktop shrink */
+  height: 420px;                     /* controls desktop image size */
   border-radius:16px;
   border:1px solid rgba(255,255,255,.12);
   overflow:hidden;
   background: rgba(255,255,255,.02);
+  display:flex;
+  align-items:center;
+  justify-content:center;
 }
 
 .cover img{
   width:100%;
-  height:auto;            /* stop stretching */
+  height:100%;
+  object-fit: contain;               /* KEY: no cropping */
+  object-position:center;
   display:block;
 }
 
