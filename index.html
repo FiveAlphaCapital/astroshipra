@@ -36,6 +36,7 @@
       display:flex;
       justify-content:center;
       padding: 18px 12px 28px;
+      overflow-x:hidden; /* prevents any accidental horizontal scroll */
     }
 
     .wrap{ width:min(var(--maxw), 100%); }
@@ -45,25 +46,42 @@
       box-shadow: var(--shadow);
       border: 1px solid rgba(255,255,255,.12);
       background: linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.04));
-      overflow:hidden;
+      overflow:hidden; /* hard stop for overflow */
       position:relative;
     }
 
+    /* ===== HERO GRID =====
+       Desktop:
+       leftTop + leftBottom in left column
+       image spans full right column
+    */
     .hero{
       display:grid;
       grid-template-columns: 1fr 1fr;
+      grid-template-rows: auto 1fr;
+      grid-template-areas:
+        "leftTop right"
+        "leftBottom right";
       gap:0;
       align-items:stretch;
     }
 
-    .left, .right, .pricing, .disclaimer{
+    /* same shade across left/right/pricing/disclaimer */
+    .leftTop, .leftBottom, .right, .pricing, .disclaimer{
       background: linear-gradient(180deg, var(--glassA), var(--glassB));
       -webkit-backdrop-filter: blur(10px);
       backdrop-filter: blur(10px);
+      min-width:0; /* important: prevents grid item overflow */
     }
 
-    .left{
-      padding: 22px 18px 16px;
+    /* LEFT blocks */
+    .leftTop{
+      grid-area:leftTop;
+      padding: 22px 18px 10px;
+    }
+    .leftBottom{
+      grid-area:leftBottom;
+      padding: 0 18px 16px;
     }
 
     /* Branding */
@@ -117,18 +135,25 @@
       margin-top:6px;
     }
 
+    /* Rotating punchline */
     .punchline{
       margin: 14px 0 10px;
       font-size: clamp(18px, 2.5vw, 28px);
       font-weight: 900;
       letter-spacing: .15px;
       line-height: 1.1;
+
+      /* prevents layout shift without causing horizontal overflow */
+      min-height: 2.4em;
     }
     .gold{ color: var(--gold); }
 
+    /* IMPORTANT: remove fixed min-width that caused mobile overflow */
     #rotatingLine{
       display:inline-block;
-      min-width: 42ch;
+      max-width: 100%;
+      white-space: normal;
+      overflow-wrap:anywhere;
       transition: opacity 180ms ease, transform 180ms ease, filter 180ms ease;
       will-change: opacity, transform, filter;
     }
@@ -143,7 +168,7 @@
       max-width: 70ch;
     }
 
-    /* Topic Buttons */
+    /* Topic Buttons (equal sized) */
     .topicRow{
       display:grid;
       grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -174,6 +199,7 @@
       justify-content:center;
       text-align:center;
       line-height:1.1;
+      min-width:0;
     }
     .topicBtn:hover{ filter: brightness(1.05); }
     .topicBtn.active{
@@ -203,10 +229,11 @@
       line-height: 1.45;
     }
 
-    /* RIGHT IMAGE SETTINGS */
+    /* RIGHT IMAGE (same as your reference settings) */
     .right{
+      grid-area:right;
       padding:18px;
-      background: linear-gradient(180deg, var(--glassA), var(--glassB));
+      min-width:0;
     }
     .cover{
       height:100%;
@@ -267,6 +294,7 @@
       border: 1px solid rgba(255,255,255,.12);
       background: rgba(255,255,255,.06);
       padding: 14px 14px 12px;
+      min-width:0;
     }
     .tier h3{
       margin:0 0 8px;
@@ -336,17 +364,31 @@
       line-height: 1.35;
     }
 
+    /* ===== MOBILE FIXES =====
+       1) prevent right-side padding pushing out
+       2) put IMAGE ABOVE topic buttons (between leftTop and leftBottom)
+    */
     @media (max-width: 980px){
-      .hero{ grid-template-columns: 1fr; }
+      .hero{
+        grid-template-columns: 1fr;
+        grid-template-rows: auto auto auto;
+        grid-template-areas:
+          "leftTop"
+          "right"
+          "leftBottom";
+      }
+      .right{ padding: 12px 14px 6px; } /* tighter to avoid overflow */
+      .leftTop{ padding: 20px 16px 10px; }
+      .leftBottom{ padding: 0 16px 16px; }
+
+      .cover{ min-height: 240px; }
       .tiers{ grid-template-columns: 1fr; }
-      .cover{ min-height: 260px; }
-      #rotatingLine{ min-width: 30ch; }
     }
+
     @media (max-width: 520px){
-      .left{ padding: 20px 16px 16px; }
-      .right{ padding: 14px; }
       .topicRow{ grid-template-columns: repeat(2, minmax(0,1fr)); }
       .topicBtn{ height: 40px; font-size: 13px; }
+      .cover{ min-height: 220px; }
     }
 
     @media (prefers-reduced-motion: reduce){
@@ -360,7 +402,8 @@
     <section class="card" aria-label="Astro Shipra Mathur Advertisement">
       <div class="hero">
 
-        <div class="left">
+        <!-- LEFT TOP -->
+        <div class="leftTop">
           <div class="brandRow">
             <div class="brandStar" aria-hidden="true"></div>
             <div>
@@ -379,7 +422,17 @@
           <p class="sub">
             Focused readings based on your birth details and current planetary periods. Straight answers, practical steps, and timing guidance.
           </p>
+        </div>
 
+        <!-- RIGHT (IMAGE) -->
+        <div class="right">
+          <div class="cover" aria-label="Topic image">
+            <img id="topicImage" src="assets/life-predictions.png" alt="Life Predictions" />
+          </div>
+        </div>
+
+        <!-- LEFT BOTTOM (TOPICS + PANEL) -->
+        <div class="leftBottom">
           <ul class="topicRow" aria-label="Topics">
             <li><button class="topicBtn active" type="button" data-topic="predictions">Life Predictions</button></li>
             <li><button class="topicBtn" type="button" data-topic="money">Money</button></li>
@@ -394,12 +447,6 @@
           <div class="panel" aria-live="polite">
             <h3 id="topicTitle">Life Predictions — What People Usually Want Answers For</h3>
             <ul class="points" id="topicPoints"></ul>
-          </div>
-        </div>
-
-        <div class="right">
-          <div class="cover" aria-label="Topic image">
-            <img id="topicImage" src="assets/life-predictions.png" alt="Life Predictions" />
           </div>
         </div>
 
@@ -473,8 +520,6 @@
 
   <script>
     // ========= Multi-topic selection state =========
-    // Default behaviour: allow selecting up to 2 topics for UI convenience.
-    // Booking buttons will enforce their own limits (1 / 2 / many).
     const selectedTopics = new Set(["predictions"]);
 
     function syncTopicActiveClasses(){
@@ -495,8 +540,6 @@
 
     function enforceSelectionLimit(limit){
       if (!Number.isFinite(limit) || limit <= 0) return;
-
-      // drop oldest selections first
       while (selectedTopics.size > limit) {
         const oldest = selectedTopics.values().next().value;
         selectedTopics.delete(oldest);
@@ -548,7 +591,7 @@
       rotatingEl.classList.add("rt-in");
       setInterval(rotatePunchline, 4000);
 
-      // ========= Topics content =========
+      // ========= Topics =========
       const TOPICS = {
         predictions: { label: "Life Predictions", points: [
           "Main theme of the next 6–12 months",
@@ -615,7 +658,6 @@
       const topicPointsEl = document.getElementById("topicPoints");
       const topicImageEl = document.getElementById("topicImage");
 
-      // On multi-select, we render the MOST RECENTLY CLICKED topic.
       function renderTopic(key){
         const t = TOPICS[key];
         if(!t) return;
@@ -632,13 +674,10 @@
         const imgSrc = TOPIC_IMAGES[key] || TOPIC_IMAGES.predictions;
         topicImageEl.src = imgSrc + "?v=" + Date.now();
         topicImageEl.alt = t.label;
-
-        topicImageEl.onerror = () => {
-          topicImageEl.src = TOPIC_IMAGES.predictions + "?v=" + Date.now();
-        };
+        topicImageEl.onerror = () => { topicImageEl.src = TOPIC_IMAGES.predictions + "?v=" + Date.now(); };
       }
 
-      // ======= Multi-select click handling (up to 2 by default) =======
+      // Multi-select (2 topics max on UI); booking enforces 1/2/unlimited based on plan
       const UI_MAX_TOPICS = 2;
 
       document.querySelectorAll(".topicBtn").forEach(btn => {
@@ -647,7 +686,6 @@
           const key = btn.dataset.topic;
 
           if (selectedTopics.has(key)) {
-            // allow unselect, but prevent ending with 0 selected
             selectedTopics.delete(key);
             if (selectedTopics.size === 0) selectedTopics.add("predictions");
           } else {
@@ -659,29 +697,26 @@
           }
 
           syncTopicActiveClasses();
-          renderTopic(key); // show last clicked topic on the right
+          renderTopic(key); // show the last clicked topic
         }, { passive:false });
       });
 
-      // initial render
       syncTopicActiveClasses();
       renderTopic("predictions");
     });
 
     // ========= WhatsApp Booking =========
-    const WHATSAPP_NUMBER = "917760997809"; // no "+"
+    const WHATSAPP_NUMBER = "917760997809";
 
     function getSelectedTopicsForBooking(){
       const labels = getSelectedTopicLabels();
       return labels.length ? labels.join(" + ") : "Not Selected";
     }
 
-    // planLimit: 1 for 1-topic, 2 for 2-topic, 99 for full kundali (unlimited)
+    // planLimit: 1 for 1-topic, 2 for 2-topic, 99 for full
     function bookTier(planName, planLimit){
-      // enforce selection count based on plan before booking
       if (planLimit === 1) enforceSelectionLimit(1);
       if (planLimit === 2) enforceSelectionLimit(2);
-      // for 99 => no enforced trimming
 
       const topics = getSelectedTopicsForBooking();
 
