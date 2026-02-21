@@ -218,25 +218,20 @@
     }
 
     .cover{
-      width: 100%;
-      aspect-ratio: 4 / 5;
-      border-radius: 16px;
-      border: 1px solid rgba(255,255,255,.12);
-      position:relative;
-      overflow:hidden;
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  border-radius: 16px;
+  border: 1px solid rgba(255,255,255,.12);
+  position:relative;
+  overflow:hidden;
 
-      /* Same family; no blue tint */
-      background:
-        radial-gradient(circle at 25% 20%, rgba(245,200,106,.12), transparent 55%),
-        radial-gradient(circle at 80% 20%, rgba(245,200,106,.08), transparent 55%),
-        linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
+  background:
+    radial-gradient(circle at 25% 20%, rgba(245,200,106,.12), transparent 55%),
+    radial-gradient(circle at 80% 20%, rgba(245,200,106,.08), transparent 55%),
+    linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
 
-      margin-top:auto;
-
-      /* IMPORTANT: prevent flex from shrinking this box (fix “compressed” look) */
-      flex: 0 0 auto;
-      flex-shrink: 0;
-    }
+  margin-top: 110px; /* ← adjust this number */
+}
 
     /* Back to “classic” image sizing (looks like earlier), but stable */
     .cover img{
