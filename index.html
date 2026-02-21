@@ -36,9 +36,6 @@
       display:flex;
       justify-content:center;
       padding: 18px 12px 28px;
-
-      /* ✅ MOBILE SAFETY: prevents any horizontal scrolling */
-      overflow-x: hidden;
     }
 
     .wrap{ width:min(var(--maxw), 100%); }
@@ -59,10 +56,8 @@
       align-items:stretch;
     }
 
-    /* ✅ prevents grid content pushing outside on smaller widths */
-    .left, .right{
-      min-width: 0;
-    }
+    /* IMPORTANT: prevents grid children from causing overflow on small screens */
+    .hero > *{ min-width: 0; }
 
     .left, .right, .pricing, .disclaimer{
       background: linear-gradient(180deg, var(--glassA), var(--glassB));
@@ -131,18 +126,12 @@
       font-weight: 900;
       letter-spacing: .15px;
       line-height: 1.1;
-
-      /* ✅ stops page "jump" without forcing width */
-      min-height: 2.4em;
     }
     .gold{ color: var(--gold); }
 
-    /* ✅ MOBILE FIX: remove forced min-width that causes overflow */
     #rotatingLine{
       display:inline-block;
-      max-width: 100%;
-      white-space: normal;
-      overflow-wrap: anywhere;
+      min-width: 42ch;
       transition: opacity 180ms ease, transform 180ms ease, filter 180ms ease;
       will-change: opacity, transform, filter;
     }
@@ -188,7 +177,6 @@
       justify-content:center;
       text-align:center;
       line-height:1.1;
-      min-width: 0;
     }
     .topicBtn:hover{ filter: brightness(1.05); }
     .topicBtn.active{
@@ -218,7 +206,7 @@
       line-height: 1.45;
     }
 
-    /* RIGHT IMAGE SETTINGS (DESKTOP UNCHANGED) */
+    /* RIGHT IMAGE SETTINGS */
     .right{
       padding:18px;
       background: linear-gradient(180deg, var(--glassA), var(--glassB));
@@ -282,7 +270,6 @@
       border: 1px solid rgba(255,255,255,.12);
       background: rgba(255,255,255,.06);
       padding: 14px 14px 12px;
-      min-width: 0;
     }
     .tier h3{
       margin:0 0 8px;
@@ -332,7 +319,6 @@
       -webkit-appearance: none;
       appearance: none;
       font-size: 14px;
-      min-width: 0;
     }
     .btn.primary{
       color:#091025;
@@ -353,32 +339,63 @@
       line-height: 1.35;
     }
 
-    /* ===========================
-       MOBILE MODIFICATIONS ONLY
-       (desktop stays exactly same)
-       =========================== */
     @media (max-width: 980px){
-      /* ✅ move image ABOVE topic buttons on mobile */
-      .hero{
-        display:flex;
-        flex-direction:column;
-      }
-      .right{ order: 1; }
-      .left{ order: 2; }
+      .hero{ grid-template-columns: 1fr; }
+      .tiers{ grid-template-columns: 1fr; }
+      .cover{ min-height: 260px; }
+      #rotatingLine{ min-width: 30ch; }
+    }
 
-      /* keep margins inside screen */
+    /* ===== MOBILE FIX (ONLY) ===== */
+    @media (max-width: 520px){
+      /* prevent right-side overflow */
+      html, body{
+        width: 100%;
+        overflow-x: hidden;
+      }
+
+      /* slightly tighter mobile padding */
+      body{
+        padding: 14px 10px 22px;
+      }
+
+      /* never exceed viewport */
+      .wrap{ width: 100%; }
+      .card{ width: 100%; max-width: 100%; }
+
       .left{ padding: 20px 16px 16px; }
       .right{ padding: 14px; }
 
-      .tiers{ grid-template-columns: 1fr; }
-      .cover{ min-height: 260px; }
-
-      /* ✅ remove any forced width on mobile */
-      #rotatingLine{ min-width: unset; }
-    }
-    @media (max-width: 520px){
+      /* topics: 2 columns */
       .topicRow{ grid-template-columns: repeat(2, minmax(0,1fr)); }
       .topicBtn{ height: 40px; font-size: 13px; }
+
+      /* rotating headline: allow wrap instead of forcing width */
+      #rotatingLine{
+        min-width: 0;
+        max-width: 100%;
+        white-space: normal;
+        overflow-wrap: anywhere;
+      }
+
+      /* buttons: allow wrap so they don't force overflow */
+      .btn{
+        white-space: normal;
+        max-width: 100%;
+        flex: 1 1 auto;
+      }
+
+      /* safety for long text */
+      .sub, .pricingGuide p, .tier, .panel{
+        max-width: 100%;
+        overflow-wrap: anywhere;
+        word-break: break-word;
+      }
+
+      img{
+        max-width: 100%;
+        height: auto;
+      }
     }
 
     @media (prefers-reduced-motion: reduce){
@@ -505,8 +522,6 @@
 
   <script>
     // ========= Multi-topic selection state =========
-    // Default behaviour: allow selecting up to 2 topics for UI convenience.
-    // Booking buttons will enforce their own limits (1 / 2 / many).
     const selectedTopics = new Set(["predictions"]);
 
     function syncTopicActiveClasses(){
@@ -527,7 +542,6 @@
 
     function enforceSelectionLimit(limit){
       if (!Number.isFinite(limit) || limit <= 0) return;
-
       while (selectedTopics.size > limit) {
         const oldest = selectedTopics.values().next().value;
         selectedTopics.delete(oldest);
@@ -695,6 +709,7 @@
       renderTopic("predictions");
     });
 
+    // ========= WhatsApp Booking =========
     const WHATSAPP_NUMBER = "917760997809";
 
     function getSelectedTopicsForBooking(){
@@ -725,6 +740,7 @@
       window.open(url, "_blank", "noopener");
     }
 
+    // ========= Payment Link =========
     const PAYMENT_LINK_URL = "PAYMENT_LINK_URL_HERE";
 
     function openPayment(planName){
