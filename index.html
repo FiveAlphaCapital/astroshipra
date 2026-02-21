@@ -7,14 +7,15 @@
 
   <style>
     :root{
-      --bg1:#0b0f2a;
-      --bg2:#160b2a; /* unified purple */
+      /* UNIFIED background palette (no blue/purple mismatch) */
+      --bg1:#0f0a22;
+      --bg2:#0f0a22;
+
       --panel: rgba(15,22,56,.68);
       --text:#f4f6ff;
       --muted:#c7cbe6;
       --gold:#f5c86a;
       --gold2:#ffdca0;
-      --accent:#8be9ff;
       --shadow: 0 18px 60px rgba(0,0,0,.45);
       --radius: 18px;
       --maxw: 1100px;
@@ -27,11 +28,14 @@
       margin:0;
       font-family: var(--font);
       color: var(--text);
+
+      /* Background made uniform (same family everywhere) */
       background:
-        radial-gradient(900px 500px at 20% 10%, rgba(139,233,255,.18), transparent 60%),
-        radial-gradient(900px 500px at 80% 0%, rgba(245,200,106,.20), transparent 55%),
-        radial-gradient(1200px 700px at 50% 120%, rgba(255,107,107,.08), transparent 55%),
+        radial-gradient(900px 500px at 20% 10%, rgba(245,200,106,.14), transparent 60%),
+        radial-gradient(900px 500px at 80% 0%, rgba(245,200,106,.10), transparent 55%),
+        radial-gradient(1200px 700px at 50% 120%, rgba(245,200,106,.08), transparent 55%),
         linear-gradient(135deg, var(--bg1) 0%, var(--bg2) 100%);
+
       display:flex;
       justify-content:center;
       padding: 18px 12px 28px;
@@ -53,7 +57,7 @@
       display:grid;
       grid-template-columns: 1.12fr .88fr;
       gap:0;
-      align-items:stretch; /* NEW: ensure both columns stretch */
+      align-items:stretch;
     }
 
     .left{
@@ -70,8 +74,8 @@
       gap:16px;
       flex-wrap:wrap;
       margin-bottom: 10px;
-      margin-top: 0;      /* NEW: removed negative margin */
-      padding-top: 6px;   /* NEW: clean breathing room */
+      margin-top: 0;
+      padding-top: 6px;
     }
 
     .brandStar{
@@ -81,7 +85,7 @@
       position:relative;
       background:
         radial-gradient(circle at 30% 30%, rgba(245,200,106,.95), rgba(245,200,106,.35) 60%, transparent 70%),
-        radial-gradient(circle at 70% 70%, rgba(139,233,255,.55), transparent 60%),
+        radial-gradient(circle at 70% 70%, rgba(245,200,106,.22), transparent 60%),
         linear-gradient(135deg, rgba(255,255,255,.12), rgba(255,255,255,.03));
       border: 1px solid rgba(255,255,255,.18);
       box-shadow: 0 12px 40px rgba(0,0,0,.35);
@@ -89,7 +93,7 @@
       align-items:center;
       justify-content:center;
       flex: 0 0 auto;
-      margin-top: 6px;    /* NEW: top margin instead of negative hacks */
+      margin-top: 6px;
     }
     .brandStar::after{
       content:"✦";
@@ -123,8 +127,11 @@
       line-height: 1.1;
     }
     .gold{ color: var(--gold); }
+
+    /* FIX: stop layout shift when text changes length */
     #rotatingLine{
       display:inline-block;
+      min-width: 42ch; /* locks width so line swaps don't shift layout */
       transition: opacity 180ms ease, transform 180ms ease, filter 180ms ease;
       will-change: opacity, transform, filter;
     }
@@ -177,7 +184,7 @@
       color: #091025;
     }
 
-    /* Pain points panel (WIDER + BIGGER) */
+    /* Pain points panel */
     .panel{
       margin-top: 10px;
       border-radius: 16px;
@@ -198,15 +205,14 @@
       line-height: 1.5;
     }
 
-    /* RIGHT PANEL (bottom-align image with left) */
+    /* RIGHT PANEL */
     .right{
       padding: 18px;
       background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
       min-height: 540px;
-      display:flex;            /* NEW */
-      flex-direction:column;   /* NEW */
+      display:flex;
+      flex-direction:column;
     }
-
     .cover{
       width: 100%;
       aspect-ratio: 4 / 5;
@@ -214,11 +220,14 @@
       border: 1px solid rgba(255,255,255,.12);
       position:relative;
       overflow:hidden;
+
+      /* Match the page: remove bluish glow, keep warm tone */
       background:
-        radial-gradient(circle at 25% 20%, rgba(245,200,106,.25), transparent 55%),
-        radial-gradient(circle at 80% 20%, rgba(139,233,255,.18), transparent 55%),
+        radial-gradient(circle at 25% 20%, rgba(245,200,106,.18), transparent 55%),
+        radial-gradient(circle at 80% 20%, rgba(245,200,106,.10), transparent 55%),
         linear-gradient(135deg, rgba(255,255,255,.08), rgba(255,255,255,.03));
-      margin-top:auto;         /* NEW: push image box down to align bottoms */
+
+      margin-top:auto;
     }
     .cover img{
       width:100%;
@@ -233,6 +242,7 @@
       border-top: 1px solid rgba(255,255,255,.10);
       background: rgba(10,14,36,.22);
     }
+
     .pricingHead{
       display:flex;
       justify-content:space-between;
@@ -252,11 +262,13 @@
       display:inline-block;
       font-weight: 950;
     }
+
+    /* USER-FRIENDLY PRICING COPY + bigger font */
     .pricingHead p{
       margin: 10px 0 0;
       color: var(--muted);
-      font-size: 12.8px;
-      line-height: 1.35;
+      font-size: 15.5px;  /* INCREASED to match above */
+      line-height: 1.45;  /* matches .sub */
       max-width: 90ch;
     }
 
@@ -272,28 +284,32 @@
       background: rgba(255,255,255,.06);
       padding: 14px 14px 12px;
     }
+
+    /* Make headlines/text inside pricing boxes uniform */
     .tier h3{
-      margin:0 0 6px;
-      font-size: 14px;
+      margin:0 0 8px;
+      font-size: 15.5px; /* closer to panel headline size */
       letter-spacing:.2px;
+      font-weight: 950;
     }
     .price{
       margin: 2px 0 6px;
-      font-size: 24px;
+      font-size: 26px;   /* slightly larger */
       font-weight: 950;
       color: var(--gold);
     }
     .meta{
       margin:0 0 10px;
-      font-size: 12.5px;
+      font-size: 14px;   /* increased */
       color: var(--muted);
+      line-height: 1.35;
     }
     .tier ul{
       margin:0;
       padding-left: 18px;
       color: rgba(255,255,255,.88);
-      font-size: 12.8px;
-      line-height: 1.35;
+      font-size: 15.5px; /* increased to match above text */
+      line-height: 1.45;
     }
     .tierCtas{
       margin-top: 12px;
@@ -317,6 +333,7 @@
       white-space:nowrap;
       -webkit-appearance: none;
       appearance: none;
+      font-size: 14px; /* small bump */
     }
     .btn.primary{
       color:#091025;
@@ -339,19 +356,18 @@
       background: rgba(10,14,36,.35);
     }
 
-    /* Responsive (improved phone UX: image first + shorter) */
+    /* Responsive (phone UX: image first + shorter) */
     @media (max-width: 980px){
       .hero{
-        display:flex;            /* switch to flex for ordering */
+        display:flex;
         flex-direction:column;
       }
 
       .right{
-        order: 0;                /* image first */
+        order: 0;
         min-height: unset;
         padding: 12px 14px 6px;
       }
-
       .left{
         order: 1;
       }
@@ -360,7 +376,7 @@
         aspect-ratio: 16 / 9;
         max-height: 220px;
         width: 100%;
-        margin-top: 0;           /* do not push down on mobile */
+        margin-top: 0;
       }
 
       .tiers{ grid-template-columns: 1fr; }
@@ -378,6 +394,9 @@
         height: 42px;
         font-size: 13px;
       }
+
+      /* keep the punchline stable and not too wide on small screens */
+      #rotatingLine{ min-width: 30ch; }
     }
 
     @media (prefers-reduced-motion: reduce){
@@ -439,40 +458,28 @@
           <div>
             <h2>Pricing</h2>
             <p>
-              Your topic buttons map directly to the 1-topic and 2-topic consultations. Full Kundali is for broader life planning.
-              Remedies will be tailored to the specific topic or problem areas identified during the interaction between AstroShipra and the individual.
+              Choose based on how many areas you want to discuss:
+              <b>1 Topic</b> (15 min) is for questions in one area (e.g., only Money or only Marriage).
+              <b>2 Topics</b> (30 min) is for questions across two areas (e.g., Money + Career).
+              If you want to cover <b>more than 2 topics</b> or want a full life roadmap, choose
+              <b>Full Kundali Analysis</b> (60 min). Remedies are tailored to your selected topic(s).
             </p>
           </div>
         </div>
 
+        <!-- RE-ORDERED: 1 topic -> 2 topics -> full kundali -->
         <div class="tiers" aria-label="Pricing tiers">
-          <div class="tier">
-            <h3>Full Kundali Analysis And Remedies</h3>
-            <div class="price">₹25,000 / USD 300</div>
-            <div class="meta">60 Minutes Consultation</div>
-            <ul>
-              <li>Birth chart review + current dasha/transit timing</li>
-              <li>3–4 priority decisions</li>
-              <li>Simple actionable remedies</li>
-              <li>Follow-up notes summary (optional)</li>
-            </ul>
-            <div class="tierCtas">
-              <button class="btn primary" type="button" onclick="bookTier('Full Kundali Analysis — ₹25,000 / USD 300')">Book Option A</button>
-              <button class="btn secondary" type="button" onclick="openPayment('Full Kundali Analysis')">Payment Link</button>
-            </div>
-          </div>
-
           <div class="tier">
             <h3>1 Topic Consultation</h3>
             <div class="price">₹10,000 / USD 100</div>
             <div class="meta">15 Minute Consultation</div>
             <ul>
-              <li>Explaining the problem area with the topic</li>
-              <li>Remedies for that specific issue</li>
-              <li>Clear next steps</li>
+              <li>One topic only (choose from the buttons above)</li>
+              <li>Root cause + what to do next</li>
+              <li>Simple remedies for that specific issue</li>
             </ul>
             <div class="tierCtas">
-              <button class="btn primary" type="button" onclick="bookTier('1 Topic Consultation — ₹10,000 / USD 100')">Book Option B</button>
+              <button class="btn primary" type="button" onclick="bookTier('1 Topic Consultation — ₹10,000 / USD 100')">Book 1 Topic</button>
               <button class="btn secondary" type="button" onclick="openPayment('1 Topic Consultation')">Payment Link</button>
             </div>
           </div>
@@ -482,13 +489,29 @@
             <div class="price">₹15,000 / USD 150</div>
             <div class="meta">30 Minute Consultation</div>
             <ul>
-              <li>Explaining the problem areas with the topics</li>
-              <li>Remedies for those specific issues</li>
-              <li>Sequenced plan + timing</li>
+              <li>Two topics (choose 2 from the buttons above)</li>
+              <li>Sequenced plan + timing guidance</li>
+              <li>Remedies tailored to both topics</li>
             </ul>
             <div class="tierCtas">
-              <button class="btn primary" type="button" onclick="bookTier('2 Topic Consultation — ₹15,000 / USD 150')">Book Option C</button>
+              <button class="btn primary" type="button" onclick="bookTier('2 Topic Consultation — ₹15,000 / USD 150')">Book 2 Topics</button>
               <button class="btn secondary" type="button" onclick="openPayment('2 Topic Consultation')">Payment Link</button>
+            </div>
+          </div>
+
+          <div class="tier">
+            <h3>Full Kundali Analysis And Remedies</h3>
+            <div class="price">₹25,000 / USD 300</div>
+            <div class="meta">60 Minutes Consultation</div>
+            <ul>
+              <li>Full birth chart + current dasha/transit timing</li>
+              <li>Multiple topics + life roadmap</li>
+              <li>3–4 priority decisions + action plan</li>
+              <li>Remedies tailored to your main problem areas</li>
+            </ul>
+            <div class="tierCtas">
+              <button class="btn primary" type="button" onclick="bookTier('Full Kundali Analysis — ₹25,000 / USD 300')">Book Full Kundali</button>
+              <button class="btn secondary" type="button" onclick="openPayment('Full Kundali Analysis')">Payment Link</button>
             </div>
           </div>
         </div>
@@ -504,25 +527,26 @@
     window.addEventListener("DOMContentLoaded", () => {
       // ========= Rotating punchlines =========
       const punchlines = [
-        "Strategic Clarity For Life’s Important Moves",
-        "Insight That Moves You Forward",
-        "Align With Your Best Timing",
-        "Precision Guidance For Your Next Chapter",
-        "Move Forward With Confidence",
-        "Clarity That Brings Peace Of Mind",
-        "Designed For Better Decisions",
-        "Make Confident Choices With Better Timing",
-        "Turn Uncertainty Into A Clear Plan",
-        "Support For The Decisions That Matter",
-        "Guidance That Feels Calm And Practical",
-        "Your Chart, Your Timing, Your Advantage",
-        "Find Direction Without Overthinking",
-        "Progress Starts With The Right Timing",
-        "Practical Remedies, Real Next Steps",
-        "Clarity For Money, Health, And Relationships",
-        "Plan Your Next Move With Confidence",
-        "When Timing Aligns, Life Gets Easier",
-        "Steady Guidance For Life’s Big Questions"
+        "Timing Matters More Than You Think",
+        "Make Your Next Move With Precision",
+        "Clarity Before You Commit Forward",
+        "Know When To Wait Or Act Boldly",
+        "Plan Smart, Then Move With Calm",
+        "See The Pattern Behind The Chaos",
+        "Confidence Begins With Clear Timing",
+        "Decide Once The Signals Align",
+        "Better Decisions Start With Insight",
+        "Turn Doubt Into Clear Direction",
+        "Read The Cycles, Then Respond",
+        "Act Strong When The Window Opens",
+        "Pause Now, Progress Follows Soon",
+        "Find Stability In Changing Times",
+        "Your Advantage Is In The Timing",
+        "See Clearly Before You Step Ahead",
+        "Preparation Makes Progress Predictable",
+        "When You Know, You Move Better",
+        "Align Action With The Right Phase",
+        "Right Timing Changes Everything"
       ];
 
       const rotatingEl = document.getElementById("rotatingLine");
