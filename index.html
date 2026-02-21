@@ -7,7 +7,7 @@
 
   <style>
     :root{
-      /* UNIFIED background palette (no blue/purple mismatch) */
+      /* UNIFIED background palette */
       --bg1:#0f0a22;
       --bg2:#0f0a22;
 
@@ -29,7 +29,7 @@
       font-family: var(--font);
       color: var(--text);
 
-      /* Background made uniform (same family everywhere) */
+      /* Background made uniform */
       background:
         radial-gradient(900px 500px at 20% 10%, rgba(245,200,106,.14), transparent 60%),
         radial-gradient(900px 500px at 80% 0%, rgba(245,200,106,.10), transparent 55%),
@@ -128,10 +128,10 @@
     }
     .gold{ color: var(--gold); }
 
-    /* FIX: stop layout shift when text changes length */
+    /* Fix layout shift when punchline changes */
     #rotatingLine{
       display:inline-block;
-      min-width: 42ch; /* locks width so line swaps don't shift layout */
+      min-width: 42ch;
       transition: opacity 180ms ease, transform 180ms ease, filter 180ms ease;
       will-change: opacity, transform, filter;
     }
@@ -213,6 +213,7 @@
       display:flex;
       flex-direction:column;
     }
+
     .cover{
       width: 100%;
       aspect-ratio: 4 / 5;
@@ -221,7 +222,7 @@
       position:relative;
       overflow:hidden;
 
-      /* Match the page: remove bluish glow, keep warm tone */
+      /* Match the page: remove bluish glow */
       background:
         radial-gradient(circle at 25% 20%, rgba(245,200,106,.18), transparent 55%),
         radial-gradient(circle at 80% 20%, rgba(245,200,106,.10), transparent 55%),
@@ -229,10 +230,15 @@
 
       margin-top:auto;
     }
+
+    /* Chrome-safe: absolutely position image inside cover to avoid distortion */
     .cover img{
+      position:absolute;
+      inset:0;
       width:100%;
       height:100%;
       object-fit: cover;
+      object-position:center;
       display:block;
     }
 
@@ -263,12 +269,11 @@
       font-weight: 950;
     }
 
-    /* USER-FRIENDLY PRICING COPY + bigger font */
-    .pricingHead p{
-      margin: 10px 0 0;
+    .pricingGuide p{
+      margin: 8px 0;
       color: var(--muted);
-      font-size: 15.5px;  /* INCREASED to match above */
-      line-height: 1.45;  /* matches .sub */
+      font-size: 15.5px;
+      line-height: 1.45;
       max-width: 90ch;
     }
 
@@ -285,22 +290,21 @@
       padding: 14px 14px 12px;
     }
 
-    /* Make headlines/text inside pricing boxes uniform */
     .tier h3{
       margin:0 0 8px;
-      font-size: 15.5px; /* closer to panel headline size */
+      font-size: 15.5px;
       letter-spacing:.2px;
       font-weight: 950;
     }
     .price{
       margin: 2px 0 6px;
-      font-size: 26px;   /* slightly larger */
+      font-size: 26px;
       font-weight: 950;
       color: var(--gold);
     }
     .meta{
       margin:0 0 10px;
-      font-size: 14px;   /* increased */
+      font-size: 14px;
       color: var(--muted);
       line-height: 1.35;
     }
@@ -308,7 +312,7 @@
       margin:0;
       padding-left: 18px;
       color: rgba(255,255,255,.88);
-      font-size: 15.5px; /* increased to match above text */
+      font-size: 15.5px;
       line-height: 1.45;
     }
     .tierCtas{
@@ -333,7 +337,7 @@
       white-space:nowrap;
       -webkit-appearance: none;
       appearance: none;
-      font-size: 14px; /* small bump */
+      font-size: 14px;
     }
     .btn.primary{
       color:#091025;
@@ -368,13 +372,11 @@
         min-height: unset;
         padding: 12px 14px 6px;
       }
-      .left{
-        order: 1;
-      }
+      .left{ order: 1; }
 
       .cover{
         aspect-ratio: 16 / 9;
-        max-height: 220px;
+        max-height: 220px; /* only on mobile */
         width: 100%;
         margin-top: 0;
       }
@@ -395,7 +397,6 @@
         font-size: 13px;
       }
 
-      /* keep the punchline stable and not too wide on small screens */
       #rotatingLine{ min-width: 30ch; }
     }
 
@@ -457,22 +458,17 @@
         <div class="pricingHead">
           <div>
             <h2>Pricing</h2>
-            <p>
-              Choose based on how many areas you want to discuss:<br><br>
-            
-              <b>1 Topic (15 min)</b> — For questions in one area only  
-              (e.g., Money or Marriage).<br><br>
-            
-              <b>2 Topics (30 min)</b> — For questions across two areas  
-              (e.g., Money + Career).<br><br>
-            
-              <b>Full Kundali Analysis (60 min)</b> — For more than 2 topics  
-              or a complete life roadmap. Remedies are tailored to your needs.
-            </p>
+
+            <!-- New-line rendering using separate paragraphs (cleaner than <br>) -->
+            <div class="pricingGuide">
+              <p><b>1 Topic (15 min)</b> — For questions in one area only (e.g., Money or Marriage).</p>
+              <p><b>2 Topics (30 min)</b> — For questions across two areas (e.g., Money + Career).</p>
+              <p><b>Full Kundali (60 min)</b> — For more than 2 topics or a complete life roadmap. Remedies are tailored to your needs.</p>
+            </div>
           </div>
         </div>
 
-        <!-- RE-ORDERED: 1 topic -> 2 topics -> full kundali -->
+        <!-- Re-ordered: 1 topic -> 2 topics -> full kundali -->
         <div class="tiers" aria-label="Pricing tiers">
           <div class="tier">
             <h3>1 Topic Consultation</h3>
