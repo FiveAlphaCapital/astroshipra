@@ -7,15 +7,18 @@
 
   <style>
     :root{
-      /* UNIFIED background palette */
-      --bg1:#0f0a22;
-      --bg2:#0f0a22;
+      /* ONE background family everywhere */
+      --bg:#0f0a22;
 
-      --panel: rgba(15,22,56,.68);
+      /* One “glass” surface color for all panels */
+      --glassA: rgba(18, 14, 40, .78);
+      --glassB: rgba(18, 14, 40, .62);
+
       --text:#f4f6ff;
       --muted:#c7cbe6;
       --gold:#f5c86a;
       --gold2:#ffdca0;
+
       --shadow: 0 18px 60px rgba(0,0,0,.45);
       --radius: 18px;
       --maxw: 1100px;
@@ -28,14 +31,11 @@
       margin:0;
       font-family: var(--font);
       color: var(--text);
-
-      /* Background made uniform */
       background:
-        radial-gradient(900px 500px at 20% 10%, rgba(245,200,106,.14), transparent 60%),
-        radial-gradient(900px 500px at 80% 0%, rgba(245,200,106,.10), transparent 55%),
-        radial-gradient(1200px 700px at 50% 120%, rgba(245,200,106,.08), transparent 55%),
-        linear-gradient(135deg, var(--bg1) 0%, var(--bg2) 100%);
-
+        radial-gradient(900px 500px at 20% 10%, rgba(245,200,106,.12), transparent 60%),
+        radial-gradient(900px 500px at 80% 0%, rgba(245,200,106,.09), transparent 55%),
+        radial-gradient(1200px 700px at 50% 120%, rgba(245,200,106,.07), transparent 55%),
+        linear-gradient(135deg, var(--bg) 0%, var(--bg) 100%);
       display:flex;
       justify-content:center;
       padding: 18px 12px 28px;
@@ -60,11 +60,15 @@
       align-items:stretch;
     }
 
-    .left{
-      padding: 30px 26px 22px;
-      background: linear-gradient(180deg, rgba(15,22,56,.72), rgba(15,22,56,.52));
+    /* SAME background on left/right to avoid shade mismatch */
+    .left, .right{
+      background: linear-gradient(180deg, var(--glassA), var(--glassB));
       -webkit-backdrop-filter: blur(10px);
       backdrop-filter: blur(10px);
+    }
+
+    .left{
+      padding: 30px 26px 22px;
     }
 
     /* Branding */
@@ -128,7 +132,7 @@
     }
     .gold{ color: var(--gold); }
 
-    /* Fix layout shift when punchline changes */
+    /* Stop any layout shift from different text lengths */
     #rotatingLine{
       display:inline-block;
       min-width: 42ch;
@@ -208,7 +212,6 @@
     /* RIGHT PANEL */
     .right{
       padding: 18px;
-      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
       min-height: 540px;
       display:flex;
       flex-direction:column;
@@ -222,31 +225,35 @@
       position:relative;
       overflow:hidden;
 
-      /* Match the page: remove bluish glow */
+      /* Same family; no blue tint */
       background:
-        radial-gradient(circle at 25% 20%, rgba(245,200,106,.18), transparent 55%),
-        radial-gradient(circle at 80% 20%, rgba(245,200,106,.10), transparent 55%),
-        linear-gradient(135deg, rgba(255,255,255,.08), rgba(255,255,255,.03));
+        radial-gradient(circle at 25% 20%, rgba(245,200,106,.12), transparent 55%),
+        radial-gradient(circle at 80% 20%, rgba(245,200,106,.08), transparent 55%),
+        linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
 
       margin-top:auto;
+
+      /* IMPORTANT: prevent flex from shrinking this box (fix “compressed” look) */
+      flex: 0 0 auto;
+      flex-shrink: 0;
     }
 
-    /* Chrome-safe: absolutely position image inside cover to avoid distortion */
+    /* Back to “classic” image sizing (looks like earlier), but stable */
     .cover img{
-      position:absolute;
-      inset:0;
       width:100%;
       height:100%;
       object-fit: cover;
-      object-position:center;
+      object-position: center;
       display:block;
     }
 
-    /* Pricing section */
+    /* Pricing section (make SAME panel family) */
     .pricing{
       padding: 16px 18px 16px;
       border-top: 1px solid rgba(255,255,255,.10);
-      background: rgba(10,14,36,.22);
+      background: linear-gradient(180deg, var(--glassA), var(--glassB));
+      -webkit-backdrop-filter: blur(10px);
+      backdrop-filter: blur(10px);
     }
 
     .pricingHead{
@@ -350,14 +357,16 @@
       border: 1px solid rgba(255,255,255,.14);
     }
 
-    /* Disclaimer */
+    /* Disclaimer (same panel family) */
     .disclaimer{
       padding: 12px 18px 16px;
       border-top: 1px solid rgba(255,255,255,.10);
       color: rgba(255,255,255,.70);
       font-size: 12px;
       line-height: 1.35;
-      background: rgba(10,14,36,.35);
+      background: linear-gradient(180deg, var(--glassA), var(--glassB));
+      -webkit-backdrop-filter: blur(10px);
+      backdrop-filter: blur(10px);
     }
 
     /* Responsive (phone UX: image first + shorter) */
@@ -376,7 +385,7 @@
 
       .cover{
         aspect-ratio: 16 / 9;
-        max-height: 220px; /* only on mobile */
+        max-height: 220px;
         width: 100%;
         margin-top: 0;
       }
@@ -458,8 +467,6 @@
         <div class="pricingHead">
           <div>
             <h2>Pricing</h2>
-
-            <!-- New-line rendering using separate paragraphs (cleaner than <br>) -->
             <div class="pricingGuide">
               <p><b>1 Topic (15 min)</b> — For questions in one area only (e.g., Money or Marriage).</p>
               <p><b>2 Topics (30 min)</b> — For questions across two areas (e.g., Money + Career).</p>
@@ -468,7 +475,6 @@
           </div>
         </div>
 
-        <!-- Re-ordered: 1 topic -> 2 topics -> full kundali -->
         <div class="tiers" aria-label="Pricing tiers">
           <div class="tier">
             <h3>1 Topic Consultation</h3>
@@ -508,7 +514,7 @@
               <li>Full birth chart + current dasha/transit timing</li>
               <li>Multiple topics + life roadmap</li>
               <li>3–4 priority decisions + action plan</li>
-              <li>Remedies tailored for you</li>
+              <li>Remedies tailored to your main problem areas</li>
             </ul>
             <div class="tierCtas">
               <button class="btn primary" type="button" onclick="bookTier('Full Kundali Analysis — ₹25,000 / USD 300')">Book Full Kundali</button>
@@ -526,7 +532,6 @@
 
   <script>
     window.addEventListener("DOMContentLoaded", () => {
-      // ========= Rotating punchlines =========
       const punchlines = [
         "Timing Matters More Than You Think",
         "Make Your Next Move With Precision",
@@ -571,83 +576,57 @@
       rotatingEl.classList.add("rt-in");
       setInterval(rotatePunchline, 4000);
 
-      // ========= Topics (4 points max) =========
       const TOPICS = {
-        predictions: {
-          label: "Life Predictions",
-          points: [
-            "Main theme of the next 6–12 months",
-            "Good windows vs caution windows",
-            "Where to focus: money, health, relationships, career",
-            "What to do now to improve later outcomes"
-          ]
-        },
-        money: {
-          label: "Money",
-          points: [
-            "Why money feels stuck despite effort",
-            "Best time to switch jobs, negotiate, or ask for a raise",
-            "Investment timing: when to be cautious vs aggressive",
-            "How to reduce financial stress in this phase"
-          ]
-        },
-        health: {
-          label: "Health",
-          points: [
-            "Why recovery feels slow and when it improves",
-            "Best time to start a health routine or treatment plan",
-            "Stress, sleep, and digestion: what to stabilize first",
-            "Remedies that support calm and consistency"
-          ]
-        },
-        relationships: {
-          label: "Relationships",
-          points: [
-            "Why misunderstandings repeat with the same person",
-            "Should you repair, pause, or move on",
-            "How to communicate without conflict escalation",
-            "Timing for new relationships vs focusing on self"
-          ]
-        },
-        marriage: {
-          label: "Marriage",
-          points: [
-            "Marriage timing: why delays happen and when it improves",
-            "Compatibility clarity and stability markers",
-            "Family pressure: what to do next",
-            "Remedies for harmony and reduced friction"
-          ]
-        },
-        career: {
-          label: "Career And Job",
-          points: [
-            "When to switch jobs vs when to wait",
-            "Promotion timing and how to position yourself",
-            "Workplace politics: how to protect your reputation",
-            "What to learn next for maximum payoff"
-          ]
-        },
-        business: {
-          label: "Business",
-          points: [
-            "Best time to launch, expand, or rebrand",
-            "Cashflow volatility: when it stabilizes",
-            "Partnership decisions: what to avoid",
-            "Hiring / scaling timing that supports growth"
-          ]
-        },
-        children: {
-          label: "Children",
-          points: [
-            "Education direction: what suits the child best",
-            "Focus and discipline: how to improve consistency",
-            "Exam/competition timing support",
-            "Remedies for calm and learning"
-          ]
-        }
+        predictions: { label: "Life Predictions", points: [
+          "Main theme of the next 6–12 months",
+          "Good windows vs caution windows",
+          "Where to focus: money, health, relationships, career",
+          "What to do now to improve later outcomes"
+        ]},
+        money: { label: "Money", points: [
+          "Why money feels stuck despite effort",
+          "Best time to switch jobs, negotiate, or ask for a raise",
+          "Investment timing: when to be cautious vs aggressive",
+          "How to reduce financial stress in this phase"
+        ]},
+        health: { label: "Health", points: [
+          "Why recovery feels slow and when it improves",
+          "Best time to start a health routine or treatment plan",
+          "Stress, sleep, and digestion: what to stabilize first",
+          "Remedies that support calm and consistency"
+        ]},
+        relationships: { label: "Relationships", points: [
+          "Why misunderstandings repeat with the same person",
+          "Should you repair, pause, or move on",
+          "How to communicate without conflict escalation",
+          "Timing for new relationships vs focusing on self"
+        ]},
+        marriage: { label: "Marriage", points: [
+          "Marriage timing: why delays happen and when it improves",
+          "Compatibility clarity and stability markers",
+          "Family pressure: what to do next",
+          "Remedies for harmony and reduced friction"
+        ]},
+        career: { label: "Career And Job", points: [
+          "When to switch jobs vs when to wait",
+          "Promotion timing and how to position yourself",
+          "Workplace politics: how to protect your reputation",
+          "What to learn next for maximum payoff"
+        ]},
+        business: { label: "Business", points: [
+          "Best time to launch, expand, or rebrand",
+          "Cashflow volatility: when it stabilizes",
+          "Partnership decisions: what to avoid",
+          "Hiring / scaling timing that supports growth"
+        ]},
+        children: { label: "Children", points: [
+          "Education direction: what suits the child best",
+          "Focus and discipline: how to improve consistency",
+          "Exam/competition timing support",
+          "Remedies for calm and learning"
+        ]}
       };
 
-      // ========= Local image files (YOUR exact filenames) =========
       const TOPIC_IMAGES = {
         predictions: "assets/life-predictions.png",
         money: "assets/money.png",
@@ -677,13 +656,10 @@
         });
 
         const imgSrc = TOPIC_IMAGES[key] || TOPIC_IMAGES.predictions;
-
-        // Safari/cache friendly reload
         topicImageEl.src = imgSrc + "?v=" + Date.now();
         topicImageEl.alt = t.label;
 
         topicImageEl.onerror = () => {
-          console.warn("Image not found:", imgSrc);
           topicImageEl.src = TOPIC_IMAGES.predictions + "?v=" + Date.now();
         };
       }
@@ -700,7 +676,6 @@
       renderTopic("predictions");
     });
 
-    // ========= WhatsApp Booking =========
     const WHATSAPP_NUMBER = "917760997809"; // no "+"
 
     function getActiveTopicLabel(){
@@ -728,8 +703,7 @@
       window.open(url, "_blank", "noopener");
     }
 
-    // ========= Payment Link =========
-    const PAYMENT_LINK_URL = "PAYMENT_LINK_URL_HERE"; // replace with your real URL
+    const PAYMENT_LINK_URL = "PAYMENT_LINK_URL_HERE";
 
     function openPayment(planName){
       if (PAYMENT_LINK_URL === "PAYMENT_LINK_URL_HERE") {
