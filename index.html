@@ -58,6 +58,7 @@
     .left{
       padding: 30px 26px 22px;
       background: linear-gradient(180deg, rgba(15,22,56,.72), rgba(15,22,56,.52));
+      -webkit-backdrop-filter: blur(10px);
       backdrop-filter: blur(10px);
     }
 
@@ -154,6 +155,8 @@
       color: var(--text);
       cursor:pointer;
       user-select:none;
+      -webkit-appearance: none;
+      appearance: none;
     }
     .topicBtn:hover{ filter: brightness(1.05); }
     .topicBtn.active{
@@ -195,6 +198,7 @@
       border: 1px solid rgba(255,255,255,.12);
       background: rgba(255,255,255,.05);
       padding: 12px 12px 10px;
+      min-width: 0;
     }
     .getItem strong{
       display:block;
@@ -209,14 +213,15 @@
       line-height: 1.25;
     }
 
-    /* RIGHT PANEL */
+    /* RIGHT PANEL (Safari-friendly image sizing) */
     .right{
       padding: 18px;
       background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
       min-height: 540px;
     }
     .cover{
-      height: 100%;
+      width: 100%;
+      aspect-ratio: 4 / 5;            /* stable shape across Safari */
       border-radius: 16px;
       border: 1px solid rgba(255,255,255,.12);
       position:relative;
@@ -227,8 +232,6 @@
         linear-gradient(135deg, rgba(255,255,255,.08), rgba(255,255,255,.03));
     }
     .cover img{
-      position:absolute;
-      inset:0;
       width:100%;
       height:100%;
       object-fit: cover;
@@ -323,6 +326,8 @@
       justify-content:center;
       gap:10px;
       white-space:nowrap;
+      -webkit-appearance: none;
+      appearance: none;
     }
     .btn.primary{
       color:#091025;
@@ -351,6 +356,7 @@
       .right{ min-height: 340px; }
       .tiers{ grid-template-columns: 1fr; }
       .whatYouGet{ grid-template-columns: 1fr 1fr; }
+      .cover{ aspect-ratio: 16 / 9; }  /* nicer on mobile */
     }
     @media (max-width: 520px){
       .left{ padding: 22px 16px 18px; }
@@ -372,7 +378,6 @@
           <div class="brandRow">
             <div class="brandStar" aria-hidden="true"></div>
             <div>
-              <!-- FIXED TITLE -->
               <h1 class="brandName">Astro Shipra Mathur</h1>
               <div class="brandTag">Strategic Astrology • Timing • Remedies</div>
             </div>
@@ -386,7 +391,6 @@
             Focused readings based on your birth details and current planetary periods. Straight answers, practical steps, and timing guidance.
           </p>
 
-          <!-- Life Predictions first -->
           <ul class="topicRow" aria-label="Topics">
             <li><button class="topicBtn active" type="button" data-topic="predictions">Life Predictions</button></li>
             <li><button class="topicBtn" type="button" data-topic="money">Money</button></li>
@@ -425,13 +429,12 @@
 
         <div class="right">
           <div class="cover" aria-label="Topic image">
-            <!-- FIXED: only image in box (removed overlay text completely) -->
+            <!-- Image only -->
             <img id="topicImage" src="assets/life-predictions.png" alt="Life Predictions" />
           </div>
         </div>
       </div>
 
-      <!-- PRICING -->
       <div class="pricing" id="pricing">
         <div class="pricingHead">
           <div>
@@ -499,173 +502,183 @@
   </div>
 
   <script>
-    // ========= Rotating punchlines =========
-    const punchlines = [
-      "Strategic Clarity For Life’s Important Moves",
-      "Insight That Moves You Forward",
-      "A Clear Path Ahead",
-      "Align With Your Best Timing",
-      "Precision Guidance For Your Next Chapter",
-      "Move Forward With Confidence",
-      "Clarity That Brings Peace Of Mind",
-      "Designed For Better Decisions",
-      "Make Confident Choices With Better Timing",
-      "Turn Uncertainty Into A Clear Plan",
-      "Support For The Decisions That Matter",
-      "Guidance That Feels Calm And Practical",
-      "Your Chart, Your Timing, Your Advantage",
-      "Find Direction Without Overthinking",
-      "Progress Starts With The Right Timing",
-      "Practical Remedies, Real Next Steps",
-      "Clarity For Money, Health, And Relationships",
-      "Plan Your Next Move With Confidence",
-      "When Timing Aligns, Life Gets Easier",
-      "Steady Guidance For Life’s Big Questions"
-    ];
+    // --- Make sure DOM is ready before binding events (fixes Safari + pages caching edge cases) ---
+    window.addEventListener("DOMContentLoaded", () => {
 
-    const rotatingEl = document.getElementById("rotatingLine");
-    let lastIndex = 0;
+      // ========= Rotating punchlines =========
+      const punchlines = [
+        "Strategic Clarity For Life’s Important Moves",
+        "Insight That Moves You Forward",
+        "A Clear Path Ahead",
+        "Align With Your Best Timing",
+        "Precision Guidance For Your Next Chapter",
+        "Move Forward With Confidence",
+        "Clarity That Brings Peace Of Mind",
+        "Designed For Better Decisions",
+        "Make Confident Choices With Better Timing",
+        "Turn Uncertainty Into A Clear Plan",
+        "Support For The Decisions That Matter",
+        "Guidance That Feels Calm And Practical",
+        "Your Chart, Your Timing, Your Advantage",
+        "Find Direction Without Overthinking",
+        "Progress Starts With The Right Timing",
+        "Practical Remedies, Real Next Steps",
+        "Clarity For Money, Health, And Relationships",
+        "Plan Your Next Move With Confidence",
+        "When Timing Aligns, Life Gets Easier",
+        "Steady Guidance For Life’s Big Questions"
+      ];
 
-    function rotatePunchline(){
-      rotatingEl.classList.remove("rt-in");
-      rotatingEl.classList.add("rt-out");
+      const rotatingEl = document.getElementById("rotatingLine");
+      let lastIndex = 0;
 
-      setTimeout(() => {
-        let idx = Math.floor(Math.random() * punchlines.length);
-        if (punchlines.length > 1 && idx === lastIndex) idx = (idx + 1) % punchlines.length;
-        lastIndex = idx;
-        rotatingEl.textContent = punchlines[idx];
+      function rotatePunchline(){
+        rotatingEl.classList.remove("rt-in");
+        rotatingEl.classList.add("rt-out");
 
-        rotatingEl.classList.remove("rt-out");
-        rotatingEl.classList.add("rt-in");
-      }, 160);
-    }
+        setTimeout(() => {
+          let idx = Math.floor(Math.random() * punchlines.length);
+          if (punchlines.length > 1 && idx === lastIndex) idx = (idx + 1) % punchlines.length;
+          lastIndex = idx;
+          rotatingEl.textContent = punchlines[idx];
 
-    rotatingEl.classList.add("rt-in");
-    setInterval(rotatePunchline, 4000);
-
-    // ========= Topics (4 points max) =========
-    const TOPICS = {
-      predictions: {
-        label: "Life Predictions",
-        points: [
-          "Main theme of the next 6–12 months",
-          "Good windows vs caution windows",
-          "Where to focus: money, health, relationships, career",
-          "What to do now to improve later outcomes"
-        ]
-      },
-      money: {
-        label: "Money",
-        points: [
-          "Why money feels stuck despite effort",
-          "Best time to switch jobs, negotiate, or ask for a raise",
-          "Investment timing: when to be cautious vs aggressive",
-          "How to reduce financial stress in this phase"
-        ]
-      },
-      health: {
-        label: "Health",
-        points: [
-          "Why recovery feels slow and when it improves",
-          "Best time to start a health routine or treatment plan",
-          "Stress, sleep, and digestion: what to stabilize first",
-          "Remedies that support calm and consistency"
-        ]
-      },
-      relationships: {
-        label: "Relationships",
-        points: [
-          "Why misunderstandings repeat with the same person",
-          "Should you repair, pause, or move on",
-          "How to communicate without conflict escalation",
-          "Timing for new relationships vs focusing on self"
-        ]
-      },
-      marriage: {
-        label: "Marriage",
-        points: [
-          "Marriage timing: why delays happen and when it improves",
-          "Compatibility clarity and stability markers",
-          "Family pressure: what to do next",
-          "Remedies for harmony and reduced friction"
-        ]
-      },
-      career: {
-        label: "Career And Job",
-        points: [
-          "When to switch jobs vs when to wait",
-          "Promotion timing and how to position yourself",
-          "Workplace politics: how to protect your reputation",
-          "What to learn next for maximum payoff"
-        ]
-      },
-      business: {
-        label: "Business",
-        points: [
-          "Best time to launch, expand, or rebrand",
-          "Cashflow volatility: when it stabilizes",
-          "Partnership decisions: what to avoid",
-          "Hiring / scaling timing that supports growth"
-        ]
-      },
-      children: {
-        label: "Children",
-        points: [
-          "Education direction: what suits the child best",
-          "Focus and discipline: how to improve consistency",
-          "Exam/competition timing support",
-          "Remedies for calm and learning"
-        ]
+          rotatingEl.classList.remove("rt-out");
+          rotatingEl.classList.add("rt-in");
+        }, 160);
       }
-    };
 
-    // ========= Local image files (YOUR exact filenames) =========
-    const TOPIC_IMAGES = {
-      predictions: "assets/life-predictions.png",
-      money: "assets/money.png",
-      health: "assets/health.png",
-      relationships: "assets/relationships.png",
-      marriage: "assets/marriage.png",
-      career: "assets/career.png",
-      business: "assets/business.png",
-      children: "assets/children.png"
-    };
+      rotatingEl.classList.add("rt-in");
+      setInterval(rotatePunchline, 4000);
 
-    const topicTitleEl = document.getElementById("topicTitle");
-    const topicPointsEl = document.getElementById("topicPoints");
-    const topicImageEl = document.getElementById("topicImage");
-
-    function renderTopic(key){
-      const t = TOPICS[key];
-      if(!t) return;
-
-      topicTitleEl.textContent = `${t.label} — What People Usually Want Answers For`;
-
-      topicPointsEl.innerHTML = "";
-      t.points.forEach(p => {
-        const li = document.createElement("li");
-        li.textContent = p;
-        topicPointsEl.appendChild(li);
-      });
-
-      const imgSrc = TOPIC_IMAGES[key] || TOPIC_IMAGES.predictions;
-      topicImageEl.src = imgSrc;
-      topicImageEl.alt = t.label;
-
-      // Harden: fall back if any image is missing
-      topicImageEl.onerror = () => {
-        console.warn("Image not found:", imgSrc);
-        topicImageEl.src = TOPIC_IMAGES.predictions;
+      // ========= Topics (4 points max) =========
+      const TOPICS = {
+        predictions: {
+          label: "Life Predictions",
+          points: [
+            "Main theme of the next 6–12 months",
+            "Good windows vs caution windows",
+            "Where to focus: money, health, relationships, career",
+            "What to do now to improve later outcomes"
+          ]
+        },
+        money: {
+          label: "Money",
+          points: [
+            "Why money feels stuck despite effort",
+            "Best time to switch jobs, negotiate, or ask for a raise",
+            "Investment timing: when to be cautious vs aggressive",
+            "How to reduce financial stress in this phase"
+          ]
+        },
+        health: {
+          label: "Health",
+          points: [
+            "Why recovery feels slow and when it improves",
+            "Best time to start a health routine or treatment plan",
+            "Stress, sleep, and digestion: what to stabilize first",
+            "Remedies that support calm and consistency"
+          ]
+        },
+        relationships: {
+          label: "Relationships",
+          points: [
+            "Why misunderstandings repeat with the same person",
+            "Should you repair, pause, or move on",
+            "How to communicate without conflict escalation",
+            "Timing for new relationships vs focusing on self"
+          ]
+        },
+        marriage: {
+          label: "Marriage",
+          points: [
+            "Marriage timing: why delays happen and when it improves",
+            "Compatibility clarity and stability markers",
+            "Family pressure: what to do next",
+            "Remedies for harmony and reduced friction"
+          ]
+        },
+        career: {
+          label: "Career And Job",
+          points: [
+            "When to switch jobs vs when to wait",
+            "Promotion timing and how to position yourself",
+            "Workplace politics: how to protect your reputation",
+            "What to learn next for maximum payoff"
+          ]
+        },
+        business: {
+          label: "Business",
+          points: [
+            "Best time to launch, expand, or rebrand",
+            "Cashflow volatility: when it stabilizes",
+            "Partnership decisions: what to avoid",
+            "Hiring / scaling timing that supports growth"
+          ]
+        },
+        children: {
+          label: "Children",
+          points: [
+            "Education direction: what suits the child best",
+            "Focus and discipline: how to improve consistency",
+            "Exam/competition timing support",
+            "Remedies for calm and learning"
+          ]
+        }
       };
-    }
 
-    document.querySelectorAll(".topicBtn").forEach(btn => {
-      btn.addEventListener("click", () => {
-        document.querySelectorAll(".topicBtn").forEach(b => b.classList.remove("active"));
-        btn.classList.add("active");
-        renderTopic(btn.dataset.topic);
+      // ========= Local image files (YOUR exact filenames) =========
+      const TOPIC_IMAGES = {
+        predictions: "assets/life-predictions.png",
+        money: "assets/money.png",
+        health: "assets/health.png",
+        relationships: "assets/relationships.png",
+        marriage: "assets/marriage.png",
+        career: "assets/career.png",
+        business: "assets/business.png",
+        children: "assets/children.png"
+      };
+
+      const topicTitleEl = document.getElementById("topicTitle");
+      const topicPointsEl = document.getElementById("topicPoints");
+      const topicImageEl = document.getElementById("topicImage");
+
+      function renderTopic(key){
+        const t = TOPICS[key];
+        if(!t) return;
+
+        topicTitleEl.textContent = `${t.label} — What People Usually Want Answers For`;
+
+        topicPointsEl.innerHTML = "";
+        t.points.forEach(p => {
+          const li = document.createElement("li");
+          li.textContent = p;
+          topicPointsEl.appendChild(li);
+        });
+
+        const imgSrc = TOPIC_IMAGES[key] || TOPIC_IMAGES.predictions;
+
+        // Force a fresh load (fixes Safari caching a previous src sometimes)
+        topicImageEl.src = "";
+        topicImageEl.src = imgSrc;
+        topicImageEl.alt = t.label;
+
+        topicImageEl.onerror = () => {
+          console.warn("Image not found:", imgSrc);
+          topicImageEl.src = TOPIC_IMAGES.predictions;
+        };
+      }
+
+      // Bind clicks (this fixes "images not changing" if script executed before DOM)
+      document.querySelectorAll(".topicBtn").forEach(btn => {
+        btn.addEventListener("click", () => {
+          document.querySelectorAll(".topicBtn").forEach(b => b.classList.remove("active"));
+          btn.classList.add("active");
+          renderTopic(btn.dataset.topic);
+        });
       });
+
+      // init: Life Predictions
+      renderTopic("predictions");
     });
 
     // ========= WhatsApp Booking =========
@@ -707,9 +720,6 @@
       const url = PAYMENT_LINK_URL + (PAYMENT_LINK_URL.includes("?") ? "&" : "?") + "plan=" + encodeURIComponent(planName);
       window.open(url, "_blank", "noopener");
     }
-
-    // init: Life Predictions
-    renderTopic("predictions");
   </script>
 </body>
 </html>
