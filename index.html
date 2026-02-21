@@ -208,20 +208,19 @@
 
     /* RIGHT IMAGE SETTINGS */
    /* RIGHT IMAGE SETTINGS (DESKTOP: shrink, NO crop) */
-.right{
-  padding: 22px 18px 16px;          /* match .left padding */
-  background: linear-gradient(180deg, var(--glassA), var(--glassB));
+   .right{
+  padding:22px 18px 16px;   /* match left side */
   display:flex;
   align-items:flex-start;
+  justify-content:center;   /* center image horizontally */
 }
 
-
-.cover img{
-  width:80%;
-  height:80%;
-  object-fit: contain;               /* KEY: no cropping */
-  object-position:center;
-  display:block;
+.right img{
+  width:100%;
+  max-width:420px;          /* THIS controls desktop size */
+  height:auto;
+  object-fit:contain;
+  border-radius:16px;
 }
 
     /* Pricing */
