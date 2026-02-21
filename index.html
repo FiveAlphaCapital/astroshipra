@@ -7,10 +7,9 @@
 
   <style>
     :root{
-      /* ONE background family everywhere */
       --bg:#0f0a22;
 
-      /* One “glass” surface color for all panels */
+      /* unified “glass” across all panels */
       --glassA: rgba(18, 14, 40, .78);
       --glassB: rgba(18, 14, 40, .62);
 
@@ -35,7 +34,7 @@
         radial-gradient(900px 500px at 20% 10%, rgba(245,200,106,.12), transparent 60%),
         radial-gradient(900px 500px at 80% 0%, rgba(245,200,106,.09), transparent 55%),
         radial-gradient(1200px 700px at 50% 120%, rgba(245,200,106,.07), transparent 55%),
-        linear-gradient(135deg, var(--bg) 0%, var(--bg) 100%);
+        linear-gradient(135deg, var(--bg), var(--bg));
       display:flex;
       justify-content:center;
       padding: 18px 12px 28px;
@@ -60,8 +59,8 @@
       align-items:stretch;
     }
 
-    /* SAME background on left/right to avoid shade mismatch */
-    .left, .right{
+    /* unify shades */
+    .left, .right, .pricing, .disclaimer{
       background: linear-gradient(180deg, var(--glassA), var(--glassB));
       -webkit-backdrop-filter: blur(10px);
       backdrop-filter: blur(10px);
@@ -109,7 +108,7 @@
       align-items:center;
       justify-content:center;
       flex: 0 0 auto;
-      margin-top: 6px;
+      margin-top: 6px; /* keeps margin from top */
     }
     .brandStar::after{
       content:"✦";
@@ -221,51 +220,78 @@
       line-height: 1.5;
     }
 
-    /* Ensure the left bottom is a clean vertical stack */
-    .leftBottom{
-      display:flex;
-      flex-direction:column;
-    }
+    /* Left/Right bottoms */
+    .leftBottom{ display:flex; flex-direction:column; }
+    .rightBottom{ display:flex; flex-direction:column; min-height:0; }
 
-    /* Right bottom holds the image and must match leftBottom height */
-    .rightBottom{
-      display:flex;
-      flex-direction:column;
-      min-height: 0; /* important for grid/flex sizing stability */
-    }
-
-    /* Image should fill the bottom row exactly */
+    /* ===========================
+       PRO IMAGE CARD (NO DISTORTION)
+       - blurred background from the same image (cover)
+       - sharp foreground image (contain)
+       =========================== */
     .cover{
       width: 100%;
-      height: 100%;            /* KEY: fill row 2 */
+      height: 100%;                /* match the leftBottom height */
       border-radius: 16px;
       border: 1px solid rgba(255,255,255,.12);
       position:relative;
       overflow:hidden;
 
-      background:
-        radial-gradient(circle at 25% 20%, rgba(245,200,106,.12), transparent 55%),
-        radial-gradient(circle at 80% 20%, rgba(245,200,106,.08), transparent 55%),
-        linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
+      /* premium frame */
+      box-shadow: 0 18px 60px rgba(0,0,0,.35);
+      background: rgba(255,255,255,.04);
+
+      /* internal padding so contain looks intentional */
+      padding: 14px;
+
+      /* improves rendering quality on some screens */
+      transform: translateZ(0);
     }
 
+    /* blurred backdrop layer using same image */
+    .cover::before{
+      content:"";
+      position:absolute;
+      inset:-20px; /* extend so blur doesn’t show edges */
+      background-image: var(--topicImg);
+      background-size: cover;
+      background-position: center;
+      filter: blur(18px) saturate(1.05);
+      opacity: .55;
+      transform: scale(1.06);
+    }
+
+    /* subtle vignette + highlight */
+    .cover::after{
+      content:"";
+      position:absolute;
+      inset:0;
+      background:
+        radial-gradient(120% 90% at 50% 10%, rgba(245,200,106,.18), transparent 55%),
+        radial-gradient(90% 60% at 20% 80%, rgba(255,255,255,.10), transparent 55%),
+        linear-gradient(180deg, rgba(0,0,0,.10), rgba(0,0,0,.30));
+      pointer-events:none;
+    }
+
+    /* foreground image (FULL image visible, no distortion) */
     .cover img{
+      position: relative;
+      z-index: 2;
       width:100%;
       height:100%;
-      object-fit: cover;
+      object-fit: contain;         /* FULL image visible */
       object-position: center;
       display:block;
+      border-radius: 12px;
+      box-shadow: 0 10px 26px rgba(0,0,0,.28);
+      background: rgba(15,10,34,.22);
     }
 
-    /* Pricing section (same panel family) */
+    /* Pricing */
     .pricing{
       padding: 16px 18px 16px;
       border-top: 1px solid rgba(255,255,255,.10);
-      background: linear-gradient(180deg, var(--glassA), var(--glassB));
-      -webkit-backdrop-filter: blur(10px);
-      backdrop-filter: blur(10px);
     }
-
     .pricingHead{
       display:flex;
       justify-content:space-between;
@@ -285,7 +311,6 @@
       display:inline-block;
       font-weight: 950;
     }
-
     .pricingGuide p{
       margin: 8px 0;
       color: var(--muted);
@@ -306,7 +331,6 @@
       background: rgba(255,255,255,.06);
       padding: 14px 14px 12px;
     }
-
     .tier h3{
       margin:0 0 8px;
       font-size: 15.5px;
@@ -367,16 +391,12 @@
       border: 1px solid rgba(255,255,255,.14);
     }
 
-    /* Disclaimer (same panel family) */
     .disclaimer{
       padding: 12px 18px 16px;
       border-top: 1px solid rgba(255,255,255,.10);
       color: rgba(255,255,255,.70);
       font-size: 12px;
       line-height: 1.35;
-      background: linear-gradient(180deg, var(--glassA), var(--glassB));
-      -webkit-backdrop-filter: blur(10px);
-      backdrop-filter: blur(10px);
     }
 
     /* Responsive */
@@ -385,22 +405,25 @@
         display:flex;
         flex-direction:column;
       }
-
       .right{
         order: 0;
         min-height: unset;
         padding: 12px 14px 6px;
-        grid-template-rows: auto; /* simplify on mobile */
+        grid-template-rows: auto;
       }
       .left{
         order: 1;
         display:block;
       }
 
+      /* mobile: make image shorter and wide (still contain) */
       .cover{
-        aspect-ratio: 16 / 9;
         height: auto;
-        max-height: 220px;
+        padding: 12px;
+      }
+      .cover img{
+        height: auto;
+        max-height: 240px;
       }
 
       .tiers{ grid-template-columns: 1fr; }
@@ -410,14 +433,8 @@
       .left{ padding: 22px 16px 18px; }
       .right{ padding: 12px 12px 6px; }
 
-      .topicRow{
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-      }
-
-      .topicBtn{
-        height: 42px;
-        font-size: 13px;
-      }
+      .topicRow{ grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .topicBtn{ height: 42px; font-size: 13px; }
 
       #rotatingLine{ min-width: 30ch; }
     }
@@ -478,7 +495,7 @@
           <div class="rightTop"></div>
 
           <div class="rightBottom">
-            <div class="cover" aria-label="Topic image">
+            <div class="cover" aria-label="Topic image" id="cover">
               <img id="topicImage" src="assets/life-predictions.png" alt="Life Predictions" />
             </div>
           </div>
@@ -491,9 +508,9 @@
           <div>
             <h2>Pricing</h2>
             <div class="pricingGuide">
-              <p><b>1 Topic (15 min)</b> — For questions within in one area of interest only (e.g. Money or Marriage).</p>
-              <p><b>2 Topics (30 min)</b> — For questions across two areas of interest (e.g. Money + Children).</p>
-              <p><b>Full Kundali Analysis (60 min)</b> — For questions spaning more than 2 topics including a complete life roadmap.</p>
+              <p><b>1 Topic (15 min)</b> — For questions within one area only (e.g., Money or Marriage).</p>
+              <p><b>2 Topics (30 min)</b> — For questions across two areas (e.g., Money + Children).</p>
+              <p><b>Full Kundali Analysis (60 min)</b> — For questions spanning more than 2 topics + a full life roadmap.</p>
             </div>
           </div>
         </div>
@@ -504,7 +521,7 @@
             <div class="price">₹10,000 / USD 100</div>
             <div class="meta">15 Minute Consultation</div>
             <ul>
-              <li>Discuss One topic </li>
+              <li>Discuss one topic</li>
               <li>Root cause + what to do next</li>
               <li>Remedies for that specific topic</li>
             </ul>
@@ -519,7 +536,7 @@
             <div class="price">₹15,000 / USD 150</div>
             <div class="meta">30 Minute Consultation</div>
             <ul>
-              <li>Discuss Two topics </li>
+              <li>Discuss two topics</li>
               <li>Sequenced plan + timing guidance</li>
               <li>Remedies tailored to both topics</li>
             </ul>
@@ -530,13 +547,13 @@
           </div>
 
           <div class="tier">
-            <h3>Full Kundali Analysis </h3>
+            <h3>Full Kundali Analysis</h3>
             <div class="price">₹25,000 / USD 300</div>
             <div class="meta">60 Minutes Consultation</div>
             <ul>
-              <li>Full birth chart + current dasha/transit</li>
-              <li>3–4 priority topics + life roadmap</li>
-              <li>Tailored Remedies for you </li>
+              <li>Full birth chart + life roadmap</li>
+              <li>3–4 topics + dasha/transit timing</li>
+              <li>Tailored remedies</li>
             </ul>
             <div class="tierCtas">
               <button class="btn primary" type="button" onclick="bookTier('Full Kundali Analysis — ₹25,000 / USD 300')">Book Full Kundali</button>
@@ -554,6 +571,7 @@
 
   <script>
     window.addEventListener("DOMContentLoaded", () => {
+      // ========= Rotating punchlines =========
       const punchlines = [
         "Timing Matters More Than You Think",
         "Make Your Next Move With Precision",
@@ -583,13 +601,11 @@
       function rotatePunchline(){
         rotatingEl.classList.remove("rt-in");
         rotatingEl.classList.add("rt-out");
-
         setTimeout(() => {
           let idx = Math.floor(Math.random() * punchlines.length);
           if (punchlines.length > 1 && idx === lastIndex) idx = (idx + 1) % punchlines.length;
           lastIndex = idx;
           rotatingEl.textContent = punchlines[idx];
-
           rotatingEl.classList.remove("rt-out");
           rotatingEl.classList.add("rt-in");
         }, 160);
@@ -598,6 +614,7 @@
       rotatingEl.classList.add("rt-in");
       setInterval(rotatePunchline, 4000);
 
+      // ========= Topics =========
       const TOPICS = {
         predictions: { label: "Life Predictions", points: [
           "Main theme of the next 6–12 months",
@@ -663,6 +680,12 @@
       const topicTitleEl = document.getElementById("topicTitle");
       const topicPointsEl = document.getElementById("topicPoints");
       const topicImageEl = document.getElementById("topicImage");
+      const coverEl = document.getElementById("cover");
+
+      function setCoverBackdrop(imgSrc){
+        // Set CSS variable used by .cover::before to render blurred backdrop
+        coverEl.style.setProperty("--topicImg", `url('${imgSrc}')`);
+      }
 
       function renderTopic(key){
         const t = TOPICS[key];
@@ -678,11 +701,17 @@
         });
 
         const imgSrc = TOPIC_IMAGES[key] || TOPIC_IMAGES.predictions;
+
+        // Update main image (cache-bust) + update backdrop (no cache-bust needed)
         topicImageEl.src = imgSrc + "?v=" + Date.now();
         topicImageEl.alt = t.label;
 
+        setCoverBackdrop(imgSrc);
+
         topicImageEl.onerror = () => {
-          topicImageEl.src = TOPIC_IMAGES.predictions + "?v=" + Date.now();
+          const fallback = TOPIC_IMAGES.predictions;
+          topicImageEl.src = fallback + "?v=" + Date.now();
+          setCoverBackdrop(fallback);
         };
       }
 
@@ -698,6 +727,7 @@
       renderTopic("predictions");
     });
 
+    // ========= WhatsApp Booking =========
     const WHATSAPP_NUMBER = "917760997809"; // no "+"
 
     function getActiveTopicLabel(){
@@ -725,6 +755,7 @@
       window.open(url, "_blank", "noopener");
     }
 
+    // ========= Payment Link =========
     const PAYMENT_LINK_URL = "PAYMENT_LINK_URL_HERE";
 
     function openPayment(planName){
