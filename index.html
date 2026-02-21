@@ -36,6 +36,9 @@
       display:flex;
       justify-content:center;
       padding: 18px 12px 28px;
+
+      /* ✅ MOBILE SAFETY: prevents any horizontal scrolling */
+      overflow-x: hidden;
     }
 
     .wrap{ width:min(var(--maxw), 100%); }
@@ -54,6 +57,11 @@
       grid-template-columns: 1fr 1fr;
       gap:0;
       align-items:stretch;
+    }
+
+    /* ✅ prevents grid content pushing outside on smaller widths */
+    .left, .right{
+      min-width: 0;
     }
 
     .left, .right, .pricing, .disclaimer{
@@ -123,12 +131,18 @@
       font-weight: 900;
       letter-spacing: .15px;
       line-height: 1.1;
+
+      /* ✅ stops page "jump" without forcing width */
+      min-height: 2.4em;
     }
     .gold{ color: var(--gold); }
 
+    /* ✅ MOBILE FIX: remove forced min-width that causes overflow */
     #rotatingLine{
       display:inline-block;
-      min-width: 42ch;
+      max-width: 100%;
+      white-space: normal;
+      overflow-wrap: anywhere;
       transition: opacity 180ms ease, transform 180ms ease, filter 180ms ease;
       will-change: opacity, transform, filter;
     }
@@ -174,6 +188,7 @@
       justify-content:center;
       text-align:center;
       line-height:1.1;
+      min-width: 0;
     }
     .topicBtn:hover{ filter: brightness(1.05); }
     .topicBtn.active{
@@ -203,7 +218,7 @@
       line-height: 1.45;
     }
 
-    /* RIGHT IMAGE SETTINGS */
+    /* RIGHT IMAGE SETTINGS (DESKTOP UNCHANGED) */
     .right{
       padding:18px;
       background: linear-gradient(180deg, var(--glassA), var(--glassB));
@@ -267,6 +282,7 @@
       border: 1px solid rgba(255,255,255,.12);
       background: rgba(255,255,255,.06);
       padding: 14px 14px 12px;
+      min-width: 0;
     }
     .tier h3{
       margin:0 0 8px;
@@ -316,6 +332,7 @@
       -webkit-appearance: none;
       appearance: none;
       font-size: 14px;
+      min-width: 0;
     }
     .btn.primary{
       color:#091025;
@@ -336,15 +353,30 @@
       line-height: 1.35;
     }
 
+    /* ===========================
+       MOBILE MODIFICATIONS ONLY
+       (desktop stays exactly same)
+       =========================== */
     @media (max-width: 980px){
-      .hero{ grid-template-columns: 1fr; }
-      .tiers{ grid-template-columns: 1fr; }
-      .cover{ min-height: 260px; }
-      #rotatingLine{ min-width: 30ch; }
-    }
-    @media (max-width: 520px){
+      /* ✅ move image ABOVE topic buttons on mobile */
+      .hero{
+        display:flex;
+        flex-direction:column;
+      }
+      .right{ order: 1; }
+      .left{ order: 2; }
+
+      /* keep margins inside screen */
       .left{ padding: 20px 16px 16px; }
       .right{ padding: 14px; }
+
+      .tiers{ grid-template-columns: 1fr; }
+      .cover{ min-height: 260px; }
+
+      /* ✅ remove any forced width on mobile */
+      #rotatingLine{ min-width: unset; }
+    }
+    @media (max-width: 520px){
       .topicRow{ grid-template-columns: repeat(2, minmax(0,1fr)); }
       .topicBtn{ height: 40px; font-size: 13px; }
     }
@@ -496,7 +528,6 @@
     function enforceSelectionLimit(limit){
       if (!Number.isFinite(limit) || limit <= 0) return;
 
-      // drop oldest selections first
       while (selectedTopics.size > limit) {
         const oldest = selectedTopics.values().next().value;
         selectedTopics.delete(oldest);
@@ -615,7 +646,6 @@
       const topicPointsEl = document.getElementById("topicPoints");
       const topicImageEl = document.getElementById("topicImage");
 
-      // On multi-select, we render the MOST RECENTLY CLICKED topic.
       function renderTopic(key){
         const t = TOPICS[key];
         if(!t) return;
@@ -638,7 +668,6 @@
         };
       }
 
-      // ======= Multi-select click handling (up to 2 by default) =======
       const UI_MAX_TOPICS = 2;
 
       document.querySelectorAll(".topicBtn").forEach(btn => {
@@ -647,7 +676,6 @@
           const key = btn.dataset.topic;
 
           if (selectedTopics.has(key)) {
-            // allow unselect, but prevent ending with 0 selected
             selectedTopics.delete(key);
             if (selectedTopics.size === 0) selectedTopics.add("predictions");
           } else {
@@ -659,29 +687,24 @@
           }
 
           syncTopicActiveClasses();
-          renderTopic(key); // show last clicked topic on the right
+          renderTopic(key);
         }, { passive:false });
       });
 
-      // initial render
       syncTopicActiveClasses();
       renderTopic("predictions");
     });
 
-    // ========= WhatsApp Booking =========
-    const WHATSAPP_NUMBER = "917760997809"; // no "+"
+    const WHATSAPP_NUMBER = "917760997809";
 
     function getSelectedTopicsForBooking(){
       const labels = getSelectedTopicLabels();
       return labels.length ? labels.join(" + ") : "Not Selected";
     }
 
-    // planLimit: 1 for 1-topic, 2 for 2-topic, 99 for full kundali (unlimited)
     function bookTier(planName, planLimit){
-      // enforce selection count based on plan before booking
       if (planLimit === 1) enforceSelectionLimit(1);
       if (planLimit === 2) enforceSelectionLimit(2);
-      // for 99 => no enforced trimming
 
       const topics = getSelectedTopicsForBooking();
 
@@ -702,7 +725,6 @@
       window.open(url, "_blank", "noopener");
     }
 
-    // ========= Payment Link =========
     const PAYMENT_LINK_URL = "PAYMENT_LINK_URL_HERE";
 
     function openPayment(planName){
