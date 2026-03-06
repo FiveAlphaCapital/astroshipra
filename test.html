@@ -1,0 +1,1072 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Astro Shipra Mathur — Astrology Consultation</title>
+  <meta name="description" content="Decision-focused Vedic astrology consultation with clear timing windows, practical next steps, and tailored remedies." />
+
+  <style>
+    :root{
+      --bg: #fbfbfd;
+      --card: rgba(255,255,255,.78);
+      --card2:#ffffff;
+
+      --text:#12141a;
+      --muted:#5a6372;
+
+      --line: rgba(18,20,26,.10);
+      --shadow: 0 18px 50px rgba(18,20,26,.10);
+
+      --accent:#2b59ff;
+      --accent2:#0ea5a4; /* used sparingly */
+      --gold:#d6b15e;
+
+      --radius: 18px;
+      --maxw: 1100px;
+
+      --font: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+    }
+
+    *{ box-sizing:border-box; }
+    html,body{ height:100%; }
+    body{
+      margin:0;
+      font-family:var(--font);
+      color:var(--text);
+      background:
+        radial-gradient(1200px 600px at 15% 0%, rgba(43,89,255,.10), transparent 55%),
+        radial-gradient(1000px 600px at 85% 10%, rgba(14,165,164,.10), transparent 55%),
+        linear-gradient(180deg, #ffffff 0%, var(--bg) 60%, #ffffff 100%);
+      overflow-x:hidden; /* safety against accidental overflow */
+    }
+
+    a{ color:inherit; text-decoration:none; }
+    .container{
+      width:min(var(--maxw), calc(100% - 32px));
+      margin:0 auto;
+    }
+
+    /* Top Nav */
+    header{
+      position:sticky;
+      top:0;
+      z-index:50;
+      backdrop-filter: blur(10px);
+      background: rgba(251,251,253,.78);
+      border-bottom:1px solid var(--line);
+    }
+    .nav{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      padding:12px 0;
+    }
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      min-width: 0;
+    }
+    .mark{
+      width:34px; height:34px;
+      border-radius: 12px;
+      background:
+        radial-gradient(12px 12px at 30% 30%, rgba(255,255,255,.9), transparent 60%),
+        linear-gradient(135deg, rgba(43,89,255,.85), rgba(14,165,164,.75));
+      box-shadow: 0 10px 24px rgba(43,89,255,.18);
+      flex: 0 0 auto;
+    }
+    .brandText{
+      line-height:1.1;
+      min-width:0;
+    }
+    .brandText .name{
+      font-weight:750;
+      letter-spacing:-0.02em;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+    .brandText .tag{
+      font-size:12px;
+      color:var(--muted);
+      margin-top:2px;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+
+    .navLinks{
+      display:flex;
+      gap:14px;
+      align-items:center;
+    }
+    .navLinks a{
+      font-size:14px;
+      color:var(--muted);
+      padding:8px 10px;
+      border-radius: 12px;
+    }
+    .navLinks a:hover{ background: rgba(18,20,26,.05); color: var(--text); }
+
+    .navCtas{
+      display:flex;
+      gap:10px;
+      align-items:center;
+    }
+
+    .btn{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:10px;
+      padding:12px 14px;
+      border-radius: 14px;
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.75);
+      box-shadow: 0 10px 26px rgba(18,20,26,.06);
+      font-weight:650;
+      font-size:14px;
+      cursor:pointer;
+      user-select:none;
+    }
+    .btn:hover{ transform: translateY(-1px); }
+    .btn:active{ transform: translateY(0px); }
+
+    .btnPrimary{
+      border-color: rgba(43,89,255,.25);
+      background: linear-gradient(135deg, rgba(43,89,255,.95), rgba(43,89,255,.80));
+      color: #fff;
+      box-shadow: 0 14px 34px rgba(43,89,255,.20);
+    }
+    .btnGhost{
+      background: rgba(255,255,255,.65);
+    }
+
+    /* Mobile menu */
+    .menuBtn{
+      display:none;
+    }
+    .mobilePanel{
+      display:none;
+      padding: 10px 0 14px;
+      border-top: 1px solid var(--line);
+    }
+    .mobilePanel a{
+      display:block;
+      padding:12px 10px;
+      border-radius: 12px;
+      color: var(--muted);
+    }
+    .mobilePanel a:hover{
+      background: rgba(18,20,26,.05);
+      color: var(--text);
+    }
+
+    /* Sections */
+    section{ padding: 56px 0; }
+    .hero{
+      padding: 56px 0 28px;
+    }
+    .heroGrid{
+      display:grid;
+      grid-template-columns: 1.15fr .85fr;
+      gap: 22px;
+      align-items: stretch;
+    }
+    .heroCard{
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 26px;
+      overflow:hidden;
+    }
+
+    .kicker{
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.60);
+      color: var(--muted);
+      font-size: 13px;
+      width: fit-content;
+    }
+    .dot{
+      width:8px;height:8px;border-radius:999px;
+      background: var(--accent);
+      box-shadow: 0 0 0 6px rgba(43,89,255,.12);
+    }
+    h1{
+      margin: 14px 0 10px;
+      font-size: clamp(30px, 4vw, 44px);
+      letter-spacing: -0.03em;
+      line-height: 1.05;
+    }
+    .subhead{
+      margin: 0 0 16px;
+      font-size: 16px;
+      line-height: 1.6;
+      color: var(--muted);
+      max-width: 70ch;
+    }
+    .heroCtas{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      margin-top: 18px;
+    }
+    .metaRow{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      margin-top: 18px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+    .pill{
+      padding: 9px 12px;
+      border:1px solid var(--line);
+      border-radius: 999px;
+      background: rgba(255,255,255,.55);
+      display:inline-flex;
+      gap:8px;
+      align-items:center;
+    }
+    .pill svg{ width:16px;height:16px; opacity:.9; }
+
+    .sideCard{
+      background: linear-gradient(180deg, rgba(255,255,255,.78), rgba(255,255,255,.62));
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 22px;
+    }
+    .sideCard h3{
+      margin:0 0 10px;
+      letter-spacing:-0.02em;
+    }
+    .list{
+      margin: 10px 0 0;
+      padding:0;
+      list-style:none;
+      display:grid;
+      gap:10px;
+    }
+    .list li{
+      display:flex;
+      gap:10px;
+      align-items:flex-start;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+    .check{
+      width:20px;height:20px;border-radius:7px;
+      background: rgba(14,165,164,.14);
+      border: 1px solid rgba(14,165,164,.22);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      flex: 0 0 auto;
+      margin-top:2px;
+    }
+
+    /* Content cards */
+    .grid2{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    .grid3{
+      display:grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+    .card{
+      background: rgba(255,255,255,.72);
+      border:1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: 0 12px 32px rgba(18,20,26,.06);
+      padding: 18px;
+      overflow:hidden;
+      min-width: 0;
+    }
+    .card h3{ margin:0 0 8px; letter-spacing:-0.02em; }
+    .card p{ margin:0; color: var(--muted); line-height:1.6; }
+    .card ul{
+      margin: 10px 0 0;
+      padding-left: 18px;
+      color: var(--muted);
+      line-height:1.65;
+    }
+    .sectionTitle{
+      margin:0 0 10px;
+      font-size: 24px;
+      letter-spacing:-0.02em;
+    }
+    .sectionLead{
+      margin:0 0 18px;
+      color: var(--muted);
+      line-height:1.65;
+      max-width: 82ch;
+    }
+
+    /* Pricing */
+    .priceCard{
+      position:relative;
+      background: rgba(255,255,255,.78);
+    }
+    .badge{
+      position:absolute;
+      top: 16px;
+      right: 16px;
+      font-size: 12px;
+      padding: 7px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(43,89,255,.22);
+      background: rgba(43,89,255,.10);
+      color: #1b3fff;
+      font-weight: 700;
+    }
+    .priceTop{
+      display:flex;
+      align-items:flex-end;
+      justify-content:space-between;
+      gap: 10px;
+      flex-wrap:wrap;
+      margin-bottom: 10px;
+    }
+    .plan{
+      font-weight:800;
+      letter-spacing:-0.02em;
+      font-size: 18px;
+    }
+    .price{
+      font-weight:900;
+      font-size: 18px;
+      letter-spacing:-0.02em;
+    }
+    .price small{
+      font-weight:700;
+      color: var(--muted);
+      font-size: 12px;
+    }
+    .planMeta{
+      color: var(--muted);
+      margin-top: 4px;
+      font-size: 13px;
+    }
+    .whoFor{
+      margin-top: 12px;
+      padding: 10px 12px;
+      border: 1px dashed rgba(18,20,26,.18);
+      border-radius: 14px;
+      color: var(--muted);
+      background: rgba(255,255,255,.55);
+      line-height:1.55;
+      font-size: 13px;
+    }
+    .priceBtns{
+      display:flex;
+      gap:10px;
+      margin-top: 14px;
+      flex-wrap:wrap;
+    }
+    .btnWide{ width: 100%; }
+
+    /* FAQ */
+    .faq{
+      display:grid;
+      gap:10px;
+    }
+    .faqItem{
+      background: rgba(255,255,255,.72);
+      border:1px solid var(--line);
+      border-radius: 16px;
+      overflow:hidden;
+    }
+    .faqQ{
+      width:100%;
+      text-align:left;
+      padding: 14px 16px;
+      border:0;
+      background: transparent;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap: 12px;
+      cursor:pointer;
+      font-weight: 750;
+      color: var(--text);
+    }
+    .faqA{
+      padding: 0 16px 14px;
+      color: var(--muted);
+      line-height:1.65;
+      display:none;
+    }
+    .chev{
+      width:18px;height:18px;
+      opacity:.75;
+      flex:0 0 auto;
+      transition: transform .2s ease;
+    }
+    .faqItem.open .faqA{ display:block; }
+    .faqItem.open .chev{ transform: rotate(180deg); }
+
+    /* Book section */
+    .bookBox{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      align-items: stretch;
+    }
+    .notice{
+      padding: 12px 14px;
+      border-radius: 16px;
+      border: 1px solid rgba(18,20,26,.12);
+      background: rgba(255,255,255,.62);
+      color: var(--muted);
+      line-height:1.6;
+      font-size: 13px;
+    }
+
+    footer{
+      padding: 34px 0 80px;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    /* Mobile sticky CTA */
+    .stickyCta{
+      position: fixed;
+      left: 0; right: 0; bottom: 0;
+      padding: 10px 12px calc(10px + env(safe-area-inset-bottom));
+      background: rgba(251,251,253,.86);
+      border-top: 1px solid var(--line);
+      backdrop-filter: blur(10px);
+      display:none;
+      z-index:60;
+    }
+    .stickyInner{
+      width:min(var(--maxw), calc(100% - 16px));
+      margin:0 auto;
+      display:flex;
+      gap:10px;
+      align-items:center;
+      justify-content:space-between;
+    }
+    .stickyText{
+      min-width:0;
+    }
+    .stickyText strong{ display:block; font-size: 13px; }
+    .stickyText span{ display:block; font-size: 12px; color: var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width: 42vw; }
+
+    /* Responsive */
+    @media (max-width: 900px){
+      .heroGrid{ grid-template-columns: 1fr; }
+      .bookBox{ grid-template-columns: 1fr; }
+      .grid3{ grid-template-columns: 1fr; }
+      .grid2{ grid-template-columns: 1fr; }
+      .navLinks{ display:none; }
+      .menuBtn{ display:inline-flex; }
+      .stickyCta{ display:block; }
+      section{ padding: 44px 0; }
+      .hero{ padding: 44px 0 18px; }
+    }
+
+    /* Accessibility helpers */
+    .srOnly{
+      position:absolute;
+      width:1px;height:1px;
+      padding:0;margin:-1px;
+      overflow:hidden;clip:rect(0,0,0,0);
+      white-space:nowrap;border:0;
+    }
+  </style>
+</head>
+
+<body>
+  <header aria-label="Site header">
+    <div class="container">
+      <div class="nav">
+        <a class="brand" href="#top" aria-label="Astro Shipra Mathur home">
+          <div class="mark" aria-hidden="true"></div>
+          <div class="brandText">
+            <div class="name">Astro Shipra Mathur</div>
+            <div class="tag">Decision-focused Vedic astrology consultation</div>
+          </div>
+        </a>
+
+        <nav class="navLinks" aria-label="Primary navigation">
+          <a href="#decisions">Decisions</a>
+          <a href="#whatyouget">What you get</a>
+          <a href="#pricing">Pricing</a>
+          <a href="#faq">FAQ</a>
+          <a href="#book">Book</a>
+        </nav>
+
+        <div class="navCtas">
+          <button class="btn menuBtn" id="menuBtn" aria-expanded="false" aria-controls="mobilePanel">
+            Menu
+          </button>
+          <a class="btn btnGhost" href="#pricing">View Pricing</a>
+          <a class="btn btnPrimary" href="#book">Book Consultation</a>
+        </div>
+      </div>
+
+      <div class="mobilePanel" id="mobilePanel" aria-label="Mobile navigation">
+        <a href="#decisions">Decisions</a>
+        <a href="#whatyouget">What you get</a>
+        <a href="#how">How it works</a>
+        <a href="#pricing">Pricing</a>
+        <a href="#trust">Why trust</a>
+        <a href="#faq">FAQ</a>
+        <a href="#book">Book</a>
+      </div>
+    </div>
+  </header>
+
+  <main id="top">
+    <!-- HERO -->
+    <section class="hero" aria-label="Hero section">
+      <div class="container">
+        <div class="heroGrid">
+          <div class="heroCard">
+            <div class="kicker"><span class="dot" aria-hidden="true"></span> Premium • Light • High-trust</div>
+            <h1>Decision clarity through Vedic astrology — with timing you can act on</h1>
+            <p class="subhead">
+              Focused readings using your birth details and current planetary periods.
+              Clear direction, practical next steps, and favorable timing windows — without vague predictions or guarantees.
+            </p>
+
+            <div class="heroCtas">
+              <a class="btn btnPrimary" href="#book" aria-label="Book consultation">Book Consultation</a>
+              <a class="btn btnGhost" href="#pricing" aria-label="See pricing">See Pricing</a>
+              <!-- OPTIONAL: Replace with WhatsApp link if you prefer -->
+              <!-- <a class="btn btnGhost" href="[WhatsAppLink]">WhatsApp</a> -->
+            </div>
+
+            <div class="metaRow" aria-label="Key highlights">
+              <div class="pill" title="Format">
+                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M7 10h10M7 14h6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M6 3h12a3 3 0 0 1 3 3v9a3 3 0 0 1-3 3H9l-5 3v-3a3 3 0 0 1-3-3V6a3 3 0 0 1 3-3Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
+                Phone / Zoom
+              </div>
+              <div class="pill" title="Deliverables">
+                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9 12l2 2 4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M7 3h10a3 3 0 0 1 3 3v12a3 3 0 0 1-3 3H7a3 3 0 0 1-3-3V6a3 3 0 0 1 3-3Z" stroke="currentColor" stroke-width="2"/></svg>
+                Timing + next steps
+              </div>
+              <div class="pill" title="Privacy">
+                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2l8 4v6c0 5-3.5 9.5-8 10-4.5-.5-8-5-8-10V6l8-4Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M9.5 12.5l1.8 1.8 3.7-3.7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                Confidential
+              </div>
+            </div>
+          </div>
+
+          <aside class="sideCard" aria-label="What you get snapshot">
+            <h3>What you get in every session</h3>
+            <ul class="list">
+              <li><span class="check" aria-hidden="true">✓</span><span>Direct answers within the scope you choose</span></li>
+              <li><span class="check" aria-hidden="true">✓</span><span>Favorable and caution timing windows</span></li>
+              <li><span class="check" aria-hidden="true">✓</span><span>Practical next steps you can implement</span></li>
+              <li><span class="check" aria-hidden="true">✓</span><span>Tailored remedies (simple and actionable)</span></li>
+            </ul>
+            <div class="notice" style="margin-top:14px;">
+              <strong>Note:</strong> If details are missing, use placeholders below:
+              <span style="display:block;margin-top:6px;">Experience: <code>[YearsExperience]</code> • Consultations: <code>[SessionsCount]</code></span>
+            </div>
+          </aside>
+        </div>
+      </div>
+    </section>
+
+    <!-- DECISIONS -->
+    <section id="decisions" aria-label="Decision types covered">
+      <div class="container">
+        <h2 class="sectionTitle">Decisions I help with</h2>
+        <p class="sectionLead">These are common decision patterns. Bring your exact situation — we keep it specific, structured, and practical.</p>
+
+        <div class="grid2">
+          <div class="card">
+            <h3>Career & work</h3>
+            <ul>
+              <li>Should I switch roles or stay?</li>
+              <li>When is promotion more likely?</li>
+              <li>Is relocation supportive right now?</li>
+              <li>Stability vs risk in the next 3–12 months</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>Relationships & marriage</h3>
+            <ul>
+              <li>Compatibility strengths and pressure points</li>
+              <li>Marriage timing windows</li>
+              <li>Recurring conflict patterns and practical steps</li>
+              <li>Family alignment / resistance periods</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>Business & partnerships</h3>
+            <ul>
+              <li>Partnership risk and role clarity</li>
+              <li>Launch / expansion timing</li>
+              <li>Contract/negotiation windows</li>
+              <li>Operational pressure periods to plan for</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>Money & major purchases</h3>
+            <ul>
+              <li>Timing for big expenses</li>
+              <li>Cashflow stress windows to avoid surprises</li>
+              <li>Risk-heavy periods vs conservative periods</li>
+              <li>Decision sequencing (what first, what later)</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- WHAT YOU GET -->
+    <section id="whatyouget" aria-label="What you get">
+      <div class="container">
+        <h2 class="sectionTitle">What you get</h2>
+        <p class="sectionLead">Clear deliverables — so you know exactly what you’re paying for.</p>
+
+        <div class="grid3">
+          <div class="card">
+            <h3>Format</h3>
+            <p>Structured consultation via phone or Zoom. You share birth details + questions in advance.</p>
+          </div>
+          <div class="card">
+            <h3>Outputs</h3>
+            <p>Direct answers, timing windows (favorable/caution), and practical next steps you can implement.</p>
+          </div>
+          <div class="card">
+            <h3>Remedies</h3>
+            <p>Simple, actionable remedies tailored to your situation (no exaggerated claims).</p>
+          </div>
+        </div>
+
+        <div class="notice" style="margin-top:16px;">
+          <strong>Optional add-ons (edit as needed):</strong>
+          <div style="margin-top:6px; color:var(--muted); line-height:1.6;">
+            Recording and/or written summary can be included by plan (see pricing).
+            <!-- If you ALWAYS provide recordings, remove “optional” and make it standard across plans -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- HOW IT WORKS -->
+    <section id="how" aria-label="How it works">
+      <div class="container">
+        <h2 class="sectionTitle">How it works</h2>
+        <p class="sectionLead">Low friction. Clear steps. No ambiguity.</p>
+
+        <div class="grid2">
+          <div class="card">
+            <h3>1) Choose a plan</h3>
+            <p>Pick the scope that matches your decision: 1 area, 2 areas, or full strategy.</p>
+          </div>
+          <div class="card">
+            <h3>2) Share details</h3>
+            <p>Birth date, exact time, place + your questions (3–6 bullets is ideal).</p>
+          </div>
+          <div class="card">
+            <h3>3) Consultation</h3>
+            <p>We go decision-first: what to do, what to avoid, and when.</p>
+          </div>
+          <div class="card">
+            <h3>4) After the call</h3>
+            <p>You receive a short summary (and recording if included in your plan).</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PRICING -->
+    <section id="pricing" aria-label="Pricing section">
+      <div class="container">
+        <h2 class="sectionTitle">Pricing</h2>
+        <p class="sectionLead">Each plan is designed around decision scope and time. Edit amounts, durations, and inclusions to match your workflow.</p>
+
+        <div class="grid3">
+          <div class="card priceCard">
+            <div class="badge">Most popular</div>
+            <div class="priceTop">
+              <div>
+                <div class="plan">Quick Clarity — 1 Decision Area</div>
+                <div class="planMeta">20 minutes • Phone/Zoom</div>
+              </div>
+              <div class="price">₹10,000 <small>/ USD 110</small></div>
+            </div>
+            <ul>
+              <li>One focused decision area</li>
+              <li>Direct answer + timing window</li>
+              <li>Practical next steps</li>
+              <li>Tailored remedies</li>
+            </ul>
+            <div class="whoFor"><strong>For:</strong> one urgent decision (e.g., job switch OR marriage timing).</div>
+            <div class="priceBtns">
+              <!-- EDIT: Replace #book with your payment link or Calendly -->
+              <a class="btn btnPrimary btnWide" href="#book">Book Quick Clarity</a>
+              <!-- <a class="btn btnGhost btnWide" href="[PaymentLink_1Topic]">Pay & Book</a> -->
+            </div>
+          </div>
+
+          <div class="card priceCard">
+            <div class="priceTop">
+              <div>
+                <div class="plan">Deep Dive — 2 Decision Areas</div>
+                <div class="planMeta">35 minutes • Phone/Zoom</div>
+              </div>
+              <div class="price">₹15,000 <small>/ USD 165</small></div>
+            </div>
+            <ul>
+              <li>Two connected decision areas</li>
+              <li>Sequenced plan (what first, what next)</li>
+              <li>Timing guidance</li>
+              <li>Remedies tailored to both areas</li>
+            </ul>
+            <div class="whoFor"><strong>For:</strong> two linked decisions (career + money, business + timing, etc.).</div>
+            <div class="priceBtns">
+              <a class="btn btnPrimary btnWide" href="#book">Book Deep Dive</a>
+              <!-- <a class="btn btnGhost btnWide" href="[PaymentLink_2Topic]">Pay & Book</a> -->
+            </div>
+          </div>
+
+          <div class="card priceCard">
+            <div class="priceTop">
+              <div>
+                <div class="plan">Full Kundali Strategy</div>
+                <div class="planMeta">75 minutes • Phone/Zoom</div>
+              </div>
+              <div class="price">₹25,000 <small>/ USD 275</small></div>
+            </div>
+            <ul>
+              <li>Birth chart overview + life roadmap</li>
+              <li>3–4 focus areas</li>
+              <li>Dasha/transit timing windows</li>
+              <li>Priority roadmap + tailored remedies</li>
+            </ul>
+            <div class="whoFor"><strong>For:</strong> people who want a broader plan + timing across multiple areas.</div>
+            <div class="priceBtns">
+              <a class="btn btnPrimary btnWide" href="#book">Book Full Kundali</a>
+              <!-- <a class="btn btnGhost btnWide" href="[PaymentLink_Full]">Pay & Book</a> -->
+            </div>
+          </div>
+        </div>
+
+        <div class="notice" style="margin-top:16px;">
+          <strong>What a “decision area” means:</strong>
+          <div style="margin-top:6px;">
+            A decision area is one focused bucket (e.g., Career OR Marriage). Multiple questions are fine if they stay inside that bucket.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TRUST -->
+    <section id="trust" aria-label="Trust and about section">
+      <div class="container">
+        <h2 class="sectionTitle">Why trust this process</h2>
+        <p class="sectionLead">Add your real credentials here. Keep it factual and simple.</p>
+
+        <div class="grid2">
+          <div class="card">
+            <h3>Approach</h3>
+            <p>
+              Decision-first guidance. I focus on clarity, timing, and what to do next — without vague or fear-based predictions.
+              You leave with a plan you can act on.
+            </p>
+          </div>
+          <div class="card">
+            <h3>Experience (placeholders)</h3>
+            <ul>
+              <li><strong>[YearsExperience]</strong>+ years of practice</li>
+              <li><strong>[SessionsCount]</strong>+ consultations completed</li>
+              <li>Specialization: timing, decision sequencing, practical remedies</li>
+            </ul>
+            <!-- EDIT: Replace placeholders with real numbers -->
+          </div>
+        </div>
+
+        <div class="grid2" style="margin-top:16px;">
+          <div class="card">
+            <h3>Testimonials (placeholders)</h3>
+            <ul>
+              <li>“[Testimonial 1]” — <strong>[Name, City]</strong></li>
+              <li>“[Testimonial 2]” — <strong>[Name, Role]</strong></li>
+              <li>“[Testimonial 3]” — <strong>[Name]</strong></li>
+            </ul>
+            <!-- EDIT: Replace with real testimonials -->
+          </div>
+          <div class="card">
+            <h3>Confidentiality</h3>
+            <p>Your birth details and questions are kept private. I do not share client information.</p>
+            <div class="notice" style="margin-top:12px;">
+              <strong>Not a replacement for:</strong> emergency medical, legal, or financial advice.
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- WHO FOR / WHO NOT -->
+    <section aria-label="Fit section">
+      <div class="container">
+        <h2 class="sectionTitle">Is this the right fit?</h2>
+        <p class="sectionLead">This improves conversion by filtering upfront and reducing mismatched bookings.</p>
+
+        <div class="grid2">
+          <div class="card">
+            <h3>Who this is for</h3>
+            <ul>
+              <li>People making an important decision and want timing + risk clarity</li>
+              <li>Professionals/business owners who prefer structured guidance</li>
+              <li>Anyone who wants practical next steps, not abstract predictions</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>Who should not book</h3>
+            <ul>
+              <li>If you want guaranteed outcomes</li>
+              <li>If you need emergency medical/legal/financial help</li>
+              <li>If you’re not open to acting on timing-based guidance</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PREP -->
+    <section aria-label="Preparation checklist">
+      <div class="container">
+        <h2 class="sectionTitle">Preparation checklist</h2>
+        <p class="sectionLead">Send these before the call to keep the session focused and high value.</p>
+
+        <div class="grid3">
+          <div class="card">
+            <h3>Birth details</h3>
+            <ul>
+              <li>Date of birth</li>
+              <li>Exact time of birth</li>
+              <li>Place of birth</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>Your questions</h3>
+            <ul>
+              <li>3–6 bullet questions</li>
+              <li>Keep them decision-specific</li>
+              <li>Include context + options</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>Useful context</h3>
+            <ul>
+              <li>Key dates / deadlines</li>
+              <li>Constraints (budget, family, visa, etc.)</li>
+              <li>Short background (2–4 lines)</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="notice" style="margin-top:16px;">
+          <strong>Reschedule/cancellation (simple policy):</strong>
+          <div style="margin-top:6px;">
+            Reschedule allowed with <strong>24 hours notice</strong>. Same-day reschedules may not be possible. Refunds are handled case-by-case.
+            <!-- EDIT: Replace with your actual policy -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section id="faq" aria-label="Frequently asked questions">
+      <div class="container">
+        <h2 class="sectionTitle">FAQ</h2>
+        <p class="sectionLead">Short, direct answers reduce booking hesitation.</p>
+
+        <div class="faq" role="list">
+          <div class="faqItem" role="listitem">
+            <button class="faqQ" aria-expanded="false">
+              What counts as a “decision area”?
+              <svg class="chev" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+            <div class="faqA">
+              One decision area is one focused bucket (Career OR Marriage OR Business). Multiple questions are fine if they stay inside that bucket.
+            </div>
+          </div>
+
+          <div class="faqItem" role="listitem">
+            <button class="faqQ" aria-expanded="false">
+              Will I get a recording or written summary?
+              <svg class="chev" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+            <div class="faqA">
+              Add your rule here. Example: Recording is provided on request. Written summary is included in the Full Kundali plan.
+              <!-- EDIT: Make this match your real process -->
+            </div>
+          </div>
+
+          <div class="faqItem" role="listitem">
+            <button class="faqQ" aria-expanded="false">
+              Is astrology guaranteed?
+              <svg class="chev" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+            <div class="faqA">
+              No guarantees. This is a guidance tool that supports decision-making and timing. Outcomes vary by individual effort and circumstances.
+            </div>
+          </div>
+
+          <div class="faqItem" role="listitem">
+            <button class="faqQ" aria-expanded="false">
+              Can I reschedule?
+              <svg class="chev" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+            <div class="faqA">
+              Yes — reschedule with 24 hours notice. Same-day requests depend on availability.
+              <!-- EDIT: Replace with your actual policy -->
+            </div>
+          </div>
+
+          <div class="faqItem" role="listitem">
+            <button class="faqQ" aria-expanded="false">
+              What do I need to share before the call?
+              <svg class="chev" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+            <div class="faqA">
+              Birth date, exact birth time, place, and your questions. If birth time is uncertain, mention the possible range.
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- BOOK -->
+    <section id="book" aria-label="Booking section">
+      <div class="container">
+        <h2 class="sectionTitle">Book a consultation</h2>
+        <p class="sectionLead">Replace the placeholders below with your payment and scheduling links.</p>
+
+        <div class="bookBox">
+          <div class="card">
+            <h3>Option A — Payment + scheduling</h3>
+            <p>
+              Use this if you want users to pay first and then select a slot.
+            </p>
+            <div class="priceBtns" style="margin-top:12px;">
+              <!-- EDIT: Insert your real links -->
+              <a class="btn btnPrimary btnWide" href="[CalendlyLink]">Choose a slot (Calendly)</a>
+              <a class="btn btnGhost btnWide" href="[PaymentLink]">Pay now</a>
+            </div>
+            <div class="notice" style="margin-top:12px;">
+              <strong>Implementation note:</strong> You can replace these buttons with Razorpay / Stripe / Instamojo links.
+            </div>
+          </div>
+
+          <div class="card">
+            <h3>Option B — WhatsApp booking</h3>
+            <p>
+              Use this if you want manual confirmation and faster conversion for some audiences.
+            </p>
+            <div class="priceBtns" style="margin-top:12px;">
+              <a class="btn btnPrimary btnWide" href="[WhatsAppLink]">WhatsApp to book</a>
+              <a class="btn btnGhost btnWide" href="mailto:[EmailAddress]">Email</a>
+            </div>
+            <div class="notice" style="margin-top:12px;">
+              Share: birth details + plan chosen + 3–6 questions.
+            </div>
+          </div>
+        </div>
+
+        <div class="notice" style="margin-top:16px;">
+          <strong>Disclaimer:</strong> Astrology is a guidance tool. Outcomes vary by individual effort and circumstances. No guarantees are implied.
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer aria-label="Footer">
+    <div class="container">
+      <div style="display:flex; flex-wrap:wrap; gap:10px; justify-content:space-between; align-items:center;">
+        <div>
+          <strong>Astro Shipra Mathur</strong><br/>
+          <span>Decision-focused Vedic astrology consultation</span>
+        </div>
+        <div>
+          <a href="#top" class="btn btnGhost" aria-label="Back to top">Back to top</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Mobile Sticky CTA -->
+  <div class="stickyCta" aria-label="Sticky mobile call to action">
+    <div class="stickyInner">
+      <div class="stickyText">
+        <strong>Ready to book?</strong>
+        <span>See plans or book now</span>
+      </div>
+      <a class="btn btnPrimary" href="#book" aria-label="Book now from sticky button">Book</a>
+      <a class="btn btnGhost" href="#pricing" aria-label="View pricing from sticky button">Pricing</a>
+    </div>
+  </div>
+
+  <script>
+    // Mobile menu toggle
+    (function(){
+      const btn = document.getElementById('menuBtn');
+      const panel = document.getElementById('mobilePanel');
+      if(!btn || !panel) return;
+
+      btn.addEventListener('click', () => {
+        const open = panel.style.display === 'block';
+        panel.style.display = open ? 'none' : 'block';
+        btn.setAttribute('aria-expanded', String(!open));
+      });
+
+      // Close menu on link click (mobile)
+      panel.querySelectorAll('a').forEach(a => {
+        a.addEventListener('click', () => {
+          panel.style.display = 'none';
+          btn.setAttribute('aria-expanded', 'false');
+        });
+      });
+    })();
+
+    // FAQ accordion
+    (function(){
+      const items = document.querySelectorAll('.faqItem');
+      items.forEach(item => {
+        const q = item.querySelector('.faqQ');
+        if(!q) return;
+
+        q.addEventListener('click', () => {
+          const isOpen = item.classList.contains('open');
+
+          // Close others for cleaner UX (optional)
+          items.forEach(i => {
+            i.classList.remove('open');
+            const b = i.querySelector('.faqQ');
+            if(b) b.setAttribute('aria-expanded', 'false');
+          });
+
+          if(!isOpen){
+            item.classList.add('open');
+            q.setAttribute('aria-expanded', 'true');
+          }
+        });
+      });
+    })();
+  </script>
+</body>
+</html>
