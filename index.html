@@ -939,8 +939,8 @@ footer { border-top:1px solid var(--border-gold);padding:60px 40px 40px;position
 
           <!-- PAYMENT TABS -->
           <div class="pay-tabs">
-            <button class="pay-tab active" onclick="switchPayTab(this,'upi')">🇮🇳 UPI / India</button>
-            <button class="pay-tab" onclick="switchPayTab(this,'intl')">🌍 International</button>
+            <button class="pay-tab active" onclick="switchPayTab(this,'panelUpi')">🇮🇳 UPI / India</button>
+            <button class="pay-tab" onclick="switchPayTab(this,'panelIntl')">🌍 International</button>
           </div>
 
           <!-- UPI PANEL -->
@@ -1025,8 +1025,8 @@ footer { border-top:1px solid var(--border-gold);padding:60px 40px 40px;position
 
             <!-- PAYMENT TABS -->
             <div class="pay-tabs" style="margin:16px 0 0">
-              <button class="pay-tab active" onclick="switchPayTab2(this,'upi2')">🇮🇳 UPI / India</button>
-              <button class="pay-tab" onclick="switchPayTab2(this,'intl2')">🌍 International</button>
+              <button class="pay-tab active" onclick="switchPayTab(this,'panelUpi2')">🇮🇳 UPI / India</button>
+              <button class="pay-tab" onclick="switchPayTab(this,'panelIntl2')">🌍 International</button>
             </div>
 
             <!-- UPI PANEL -->
@@ -1051,10 +1051,11 @@ footer { border-top:1px solid var(--border-gold);padding:60px 40px 40px;position
                 <div class="intl-amount">$110 <span>USD</span></div>
                 <div class="intl-equiv">≈ ₹9,924 INR</div>
               </div>
-              <p class="pay-instruction">Pay securely via Visa, Mastercard, or Amex using the link below. After payment save your transaction reference.</p>
+              <p class="pay-instruction">Pay securely via Visa, Mastercard, or Amex. All major cards accepted.</p>
               <a href="https://rzp.io/l/astroshipra" target="_blank" class="pay-btn-intl" onclick="markPaymentOpened()">
-                💳 Pay via Credit / Debit Card ✦
+                💳 Pay $110 via Credit / Debit Card ✦
               </a>
+              <p class="pay-instruction" style="margin-top:10px;font-size:.88rem;opacity:.8">After clicking Pay, complete the payment on the Razorpay page. Then return here, enter your transaction reference below, and unlock the WhatsApp button.</p>
             </div>
 
             <div class="step2-or" style="margin-top:20px">— after paying, complete below —</div>
@@ -1171,22 +1172,20 @@ function highlightUsd(isIntl) {
   document.querySelectorAll('.fee-inr').forEach(el => el.classList.toggle('intl-active', isIntl));
 }
 function switchPayTab(btn, panelId) {
+  // Deactivate sibling tabs
   btn.closest('.pay-tabs').querySelectorAll('.pay-tab').forEach(t => t.classList.remove('active'));
   btn.classList.add('active');
-  const container = btn.closest('.payment-box') || btn.closest('.step2-box') || btn.closest('.booking-form') || btn.parentElement.parentElement;
-  if (container) container.querySelectorAll('.pay-panel').forEach(p => p.style.display = 'none');
+  // Hide only the sibling panels (direct siblings of the tab row, not nested panels elsewhere)
+  const tabsEl = btn.closest('.pay-tabs');
+  let sibling = tabsEl.nextElementSibling;
+  while (sibling) {
+    if (sibling.classList.contains('pay-panel')) sibling.style.display = 'none';
+    sibling = sibling.nextElementSibling;
+  }
+  // Show the target panel
   const panel = document.getElementById(panelId);
   if (panel) panel.style.display = 'block';
-  highlightUsd(panelId === 'intl');
-}
-function switchPayTab2(btn, panelId) {
-  btn.closest('.pay-tabs').querySelectorAll('.pay-tab').forEach(t => t.classList.remove('active'));
-  btn.classList.add('active');
-  const container = btn.closest('.step2-box') || btn.closest('.payment-box') || btn.closest('.booking-form') || btn.parentElement.parentElement;
-  if (container) container.querySelectorAll('.pay-panel').forEach(p => p.style.display = 'none');
-  const panel = document.getElementById(panelId);
-  if (panel) panel.style.display = 'block';
-  highlightUsd(panelId === 'intl2');
+  highlightUsd(panelId === 'panelIntl' || panelId === 'panelIntl2');
 }
 function copyUpi() {
   navigator.clipboard.writeText('shipramat@icici').then(() => {
