@@ -168,9 +168,9 @@ section { position:relative;z-index:1; }
   word-break:break-all;
   pointer-events:none;
 }
-.about-tag { position:absolute;bottom:16px;right:-18px;background:var(--mid);border:1px solid var(--border-gold);padding:14px 20px;text-align:center;box-shadow:0 8px 32px rgba(0,0,0,.5);z-index:20; }
-.about-tag .number { font-family:'Cinzel',serif;font-size:1.8rem;color:var(--gold-light);display:block;line-height:1; }
-.about-tag .label { font-family:'DM Sans',sans-serif;font-size:.62rem;letter-spacing:.12em;color:var(--beige-mid);text-transform:uppercase;font-weight:500; }
+.about-tag { position:absolute;bottom:52px;right:-18px;background:var(--mid);border:1px solid var(--border-gold);padding:10px 16px;text-align:center;box-shadow:0 8px 32px rgba(0,0,0,.5);z-index:20; }
+.about-tag .number { font-family:'Cinzel',serif;font-size:1.4rem;color:var(--gold-light);display:block;line-height:1; }
+.about-tag .label { font-family:'DM Sans',sans-serif;font-size:.55rem;letter-spacing:.1em;color:var(--beige-mid);text-transform:uppercase;font-weight:500; }
 .about-text h2 { font-family:'Cinzel',serif;font-size:clamp(1.6rem,3vw,2.2rem);font-weight:400;color:var(--beige);line-height:1.35;margin-bottom:22px; }
 .about-text h2 em { font-style:italic;color:var(--gold-light);font-family:'Lora',serif; }
 .about-text p { color:var(--text-body);margin-bottom:18px;font-size:1.05rem;line-height:1.85; }
@@ -212,7 +212,7 @@ section { position:relative;z-index:1; }
 #numerology { padding:120px 0;border-top:1px solid var(--border-gold);background:linear-gradient(180deg,transparent 0%,rgba(15,42,82,.1) 50%,transparent 100%); }
 .numerology-inner { display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:start; }
 .num-grid { display:grid;grid-template-columns:repeat(3,1fr);gap:2px;background:var(--border-gold); }
-.num-cell { background:var(--card);padding:26px 14px;text-align:center;transition:background .3s;cursor:pointer; }
+.num-cell { background:var(--card);padding:22px 10px;text-align:center;transition:background .3s;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:110px; }
 .num-cell:hover { background:#0e2850; }
 .num-digit { font-family:'Cinzel',serif;font-size:2.2rem;color:var(--gold-light);line-height:1;margin-bottom:6px; }
 .num-name { font-family:'DM Sans',sans-serif;font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;color:var(--text-body);font-weight:600; }
@@ -452,6 +452,14 @@ footer { border-top:1px solid var(--border-gold);padding:60px 40px 40px;position
   .why-grid { grid-template-columns:1fr; }
   .signs-grid { grid-template-columns:repeat(3,1fr); }
   .trust-item { width:100%; }
+  .num-grid { grid-template-columns:repeat(3,1fr); gap:1px; }
+  .num-cell { padding:16px 6px; min-height:90px; }
+  .num-digit { font-size:1.6rem; }
+  .num-name { font-size:.58rem; letter-spacing:.06em; }
+  .num-trait { font-size:.7rem; }
+  .btn-primary { font-size:.72rem; letter-spacing:.08em; padding:13px 28px; }
+  .btn-ghost   { font-size:.72rem; letter-spacing:.08em; padding:13px 28px; }
+  .hero-buttons { gap:12px; }
 }
 </style>
 </head>
@@ -614,7 +622,7 @@ footer { border-top:1px solid var(--border-gold);padding:60px 40px 40px;position
   <div class="section-inner">
     <p class="section-label reveal">Why Clients Choose Shipra</p>
     <h2 class="section-heading reveal">A Different Kind of <span class="accent">Astrologer</span></h2>
-    <p class="section-intro reveal">What sets a Shipra Mathur consultation apart from everything else you may have experienced.</p>
+    <p class="section-intro reveal">What sets an Astro Shipra Mathur consultation apart from everything else you may have experienced.</p>
     <div class="why-grid reveal">
       <div class="why-card">
         <span class="why-icon">🔬</span>
