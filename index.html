@@ -261,7 +261,17 @@ section { position:relative;z-index:1; }
 .copy-btn:hover { background:rgba(212,175,55,.3); }
 .copy-btn.copied { background:rgba(37,211,102,.2); border-color:rgba(37,211,102,.5); color:#7dfa9f; }
 .pay-instruction { font-family:'Lora',serif; font-size:.92rem; color:var(--text-body); line-height:1.7; text-align:center; margin-bottom:12px; }
-.fee-usd { font-size:1.1rem; color:var(--beige-mid); font-family:'DM Sans',sans-serif; font-weight:400; }
+.fee-inr { font-size:2.2rem; color:var(--gold-light); font-family:'Cinzel',serif; font-weight:400; transition:font-size .35s, color .35s; line-height:1; }
+.fee-sep { color:var(--beige-dark); font-size:1rem; font-family:'DM Sans',sans-serif; transition:opacity .3s; vertical-align:middle; }
+.fee-usd { font-size:1.1rem; color:var(--beige-mid); font-family:'Cinzel',serif; font-weight:400; transition:font-size .35s, color .35s; line-height:1; }
+/* International active state */
+.fee-inr.intl-active { font-size:1rem; color:rgba(245,240,224,0.45); }
+.fee-usd.intl-active { font-size:2.2rem; color:var(--gold-light); }
+/* Step2 versions — slightly larger base */
+.step2-amount .fee-inr { font-size:2.6rem; }
+.step2-amount .fee-usd { font-size:1.2rem; }
+.step2-amount .fee-inr.intl-active { font-size:1.1rem; color:rgba(245,240,224,0.45); }
+.step2-amount .fee-usd.intl-active { font-size:2.6rem; color:var(--gold-light); }
 .intl-amount-row { display:flex; flex-direction:column; align-items:center; gap:4px; margin-bottom:14px; }
 .intl-amount { font-family:'Cinzel',serif; font-size:2.4rem; color:var(--gold-light); line-height:1; }
 .intl-amount span { font-size:1.1rem; color:var(--beige-mid); font-family:'DM Sans',sans-serif; }
@@ -924,7 +934,7 @@ footer { border-top:1px solid var(--border-gold);padding:60px 40px 40px;position
         </a>
         <div class="payment-box">
           <h4>Consultation Fee</h4>
-          <div class="fee-big">₹ 9,924 <span class="fee-usd">/ ~$110 USD</span></div>
+          <div class="fee-big"><span class="fee-inr" id="feeInr1">₹ 9,924</span> <span class="fee-sep">/</span> <span class="fee-usd" id="feeUsd1">$110 USD</span></div>
           <p>60-minute personalised Vedic consultation · Any topic</p>
 
           <!-- PAYMENT TABS -->
@@ -1010,7 +1020,7 @@ footer { border-top:1px solid var(--border-gold);padding:60px 40px 40px;position
         <!-- STEP 2: PAYMENT -->
         <div class="booking-form" id="formStep2" style="display:none">
           <div class="step2-box">
-            <div class="step2-amount">₹ 9,924 <span style="font-size:1.1rem;color:var(--beige-mid);font-family:'DM Sans',sans-serif;font-weight:400">/ ~$110 USD</span></div>
+            <div class="step2-amount"><span class="fee-inr" id="feeInr2">₹ 9,924</span> <span class="fee-sep">/</span> <span class="fee-usd" id="feeUsd2">$110 USD</span></div>
             <div class="step2-label">60-minute Vedic Consultation · Any Topic</div>
 
             <!-- PAYMENT TABS -->
@@ -1156,14 +1166,18 @@ const obs = new IntersectionObserver((entries) => entries.forEach((e,i) => {
 document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
 
 // ── PAYMENT TAB SWITCHING ──
+function highlightUsd(isIntl) {
+  document.querySelectorAll('.fee-usd').forEach(el => el.classList.toggle('intl-active', isIntl));
+  document.querySelectorAll('.fee-inr').forEach(el => el.classList.toggle('intl-active', isIntl));
+}
 function switchPayTab(btn, panelId) {
   btn.closest('.pay-tabs').querySelectorAll('.pay-tab').forEach(t => t.classList.remove('active'));
   btn.classList.add('active');
-  // Find the closest ancestor that contains pay-panels
   const container = btn.closest('.payment-box') || btn.closest('.step2-box') || btn.closest('.booking-form') || btn.parentElement.parentElement;
   if (container) container.querySelectorAll('.pay-panel').forEach(p => p.style.display = 'none');
   const panel = document.getElementById(panelId);
   if (panel) panel.style.display = 'block';
+  highlightUsd(panelId === 'intl');
 }
 function switchPayTab2(btn, panelId) {
   btn.closest('.pay-tabs').querySelectorAll('.pay-tab').forEach(t => t.classList.remove('active'));
@@ -1172,6 +1186,7 @@ function switchPayTab2(btn, panelId) {
   if (container) container.querySelectorAll('.pay-panel').forEach(p => p.style.display = 'none');
   const panel = document.getElementById(panelId);
   if (panel) panel.style.display = 'block';
+  highlightUsd(panelId === 'intl2');
 }
 function copyUpi() {
   navigator.clipboard.writeText('shipramat@icici').then(() => {
